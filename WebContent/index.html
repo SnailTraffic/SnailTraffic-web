@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="author" content="Jimmy Ben Klieve">
+
+    <title>蜗牛公交</title>
+    <script src="jquery/jquery-1.11.2.min.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=h4yPyHGeReyzF66u1yIL22fU"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+	<script src="js/ajaxsubmit.js"></script>
+	<script src="js/map.js"></script>
+    <script src="js/index.js"></script>
+
+    <style>
+        html, body {
+            min-width: 640px;
+
+            width: 100%;
+            height: 100%;
+            font-family: "Microsoft YaHei", "STHei", "Trebuchet MS", Arial, sans-serif;
+            font-weight: lighter;
+        }
+
+        .content [class*="col-"] { padding: 8px; }
+
+        #addon-start, #addon-dest, #addon-current-loc, #addon-home-loc { color: white; }
+        #addon-start, #addon-current-loc { background-color: #090; }
+        #addon-dest, #addon-home-loc { background-color: #d00; }
+        #tab-group1 { padding: 0 32px; }
+        #tab-group1-content { padding: 16px 0 24px; margin: 0 64px 16px; border-bottom: solid 1px #ddd; }
+
+        .tab-content { text-align: center; font-weight: normal; }
+        .footer { margin-top: 16px; padding: 8px 0; text-align: center; font-size: 14px; border-top: solid 1px #1f6fff; }
+        .footer span { padding: 0 4px; }
+        .footer b { line-height: 12px; text-height: text-size; }
+
+    </style>
+</head>
+<body>
+<div class="jumbotron">
+    <div class="container">
+        <div class="" style="float: right;">Brand</div>
+        <h1>蜗牛公交
+            <small>Snail Traffic</small>
+        </h1>
+        <p>做武汉最好的公交出行导航系统</p>
+    </div>
+</div>
+<div class="container content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 tab-pane">
+            <ul class="nav nav-tabs" id="tab-group1" role="tablist" data-toggle="dropdown">
+                <li class="active" role="presentation"><a href="#tab-group1-tab1">公交换乘</a></li>
+                <li role="presentation"><a href="#tab-group1-tab2">线路查询</a></li>
+                <li role="presentation"><a href="#tab-group1-tab3">站点查询</a></li>
+                <li role="presentation"><a href="#tab-group1-tab4">一键回家</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row" id="tab-group1-content">
+        <div class="tab-content tab-group1" id="tab-group1-tab1">
+            <form class="form-inline" role="form" method="post" action="search.jsp">
+                <input type="hidden" name="query-type" value="1"/>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label class="input-group-addon" id="addon-start" for="bus-exchange-start">起点</label>
+                        <input class="form-control" name="bus-exchange-start" id="bus-exchange-start" type="text"
+                               tabindex="1" autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit" tabindex="2" style="border-radius: 0;">走
+                            </button>
+                        </span>
+                        <input class="form-control" name="bus-exchange-dest" id="bus-exchange-dest" type="text"
+                               tabindex="1" autocomplete="off">
+                        <label class="input-group-addon" id="addon-dest" for="bus-exchange-dest">终点</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-content tab-group1" id="tab-group1-tab2">
+            <form class="form-inline" role="form" method="post" action="search.jsp">
+                <input type="hidden" name="query-type" value="2"/>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label class="input-group-addon" id="addon-line-no" for="bus-line-no">线路号</label>
+                        <input class="form-control" name="bus-line-no" id="bus-line-no" type="text" autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit">查询</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-content tab-group1" id="tab-group1-tab3">
+            <form class="form-inline" role="form" method="post" action="search.jsp">
+                <input type="hidden" name="query-type" value="3"/>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label class="input-group-addon" id="addon-station-name" for="bus-station-name">站点名</label>
+                        <input class="form-control" name="bus-station-name" id="bus-station-name" type="text"
+                               autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit">查询</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-content tab-group1" id="tab-group1-tab4">
+            <form class="form-inline" role="form" method="post" action="search.jsp">
+                <input type="hidden" name="query-type" value="1"/>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label class="input-group-addon" id="addon-current-loc" for="bus-current-loc">当前位置</label>
+                        <input class="form-control" name="bus-exchange-start" id="bus-current-loc" type="text"
+                               tabindex="1" autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit" tabindex="2" style="border-radius: 0;">回家
+                            </button>
+                        </span>
+                        <input class="form-control" name="bus-exchange-dest" id="bus-home-loc" type="text"
+                               tabindex="1" autocomplete="off">
+                        <label class="input-group-addon" id="addon-home-loc" for="bus-home-loc">家的位置</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container" id="map-container">
+    <div class="row">
+        <div class="container" id="sidebar-container">
+            <div id="search-result-title">[TITLE]</div>
+            <div id="search-result-desc">
+                [DESCRIPTION]
+            </div>
+            <div id="search-result-container">
+                <div class="list-wrap list-left-wrap">
+                    <ul>
+                    </ul>
+                </div>
+                <div class="list-wrap list-right-wrap">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="map-canvas"></div>
+    </div>
+</div>
+<div class="footer">
+    <p>
+        <span>蜗牛公交</span>
+        <b>|</b>
+        <span>页面设计 - 李诺格</span>
+        <b>|</b>
+        <span>算法设计 - 钟佳杰</span>
+        <b>|</b>
+        <span>数据库设计 - 刘国维</span>
+    <p>
+    <p>Powered by jQuery, Bootstrap, and Baidu Map API</p>
+</div>
+</body>
+</html>

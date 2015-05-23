@@ -1,14 +1,15 @@
 package com.snail.traffic.persistence;
 
+import net.sf.json.*;
+
 /**
  * 两个字符串数组的结构体
  * @author weiliu
  *
  */
-public class InfoStruct {
-	
-	private String [] leftStrs 	= null;	// 左行数组
-	private String [] rightStrs	= null;	// 右行数组
+public abstract class InfoStruct implements CovertToJson {
+
+	public abstract JSONObject toJSON();
 	
 	/**
 	 * 保存数组信息
@@ -17,12 +18,7 @@ public class InfoStruct {
 	 * @param str
 	 * 			字符串数组
 	 */
-	public void put(Boolean left, String[] str) {
-		if(left)
-			this.leftStrs = str;
-		else
-			this.rightStrs = str;
-	}
+	public abstract void put(Boolean left, String[] str);
 	
 	/**
 	 * 获取数组信息
@@ -30,12 +26,7 @@ public class InfoStruct {
 	 * 			是否为左边数组
 	 * @return 字符串数组
 	 */
-	public String[] get(Boolean left) {
-		if(left)
-			return leftStrs;
-		else
-			return rightStrs;
-	}
+	public abstract String[] get(Boolean left);
 	
 	
 }

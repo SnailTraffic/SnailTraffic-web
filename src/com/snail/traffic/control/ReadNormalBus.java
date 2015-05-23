@@ -187,7 +187,7 @@ public class ReadNormalBus extends ReadSheetBase {
 		
 		String firstcell = readCell(SHEETN_NUMBER, 0, i);  // firstcell是首个单元格内的字符串
 		
-		if (firstcell.equals("") || firstcell == null)	//若每行的首位为空,则直接跳过
+		if (firstcell == null || firstcell.equals(""))	//若每行的首位为空,则直接跳过
     		return null;
     	
 		String columnStr = null;
@@ -250,7 +250,8 @@ public class ReadNormalBus extends ReadSheetBase {
 							, normalbus.lineRange, normalbus.firstOpen
 							, normalbus.lastOpen, normalbus.firstClose
 							, normalbus.lastClose, normalbus.price
-							, normalbus.cardPrice, normalbus.company);
+							, normalbus.cardPrice, normalbus.company
+							, normalbus.remark);
 		}
 		return lidvalue;
 	}

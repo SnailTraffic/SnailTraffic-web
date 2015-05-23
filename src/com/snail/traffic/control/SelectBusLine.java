@@ -3,6 +3,7 @@ package com.snail.traffic.control;
 import java.sql.Connection;
 
 import com.snail.traffic.persistence.AdminLineTable;
+import com.snail.traffic.persistence.AdminSiteTable;
 import com.snail.traffic.persistence.InfoStruct;
 import com.snail.traffic.persistence.LineAllInfoStruct;
 import com.snail.traffic.persistence.SelectOperated;
@@ -15,9 +16,9 @@ import com.snail.traffic.persistence.TwoLongStruct;
  * 3.返回步骤2的数组
  */
 public class SelectBusLine extends SelectBase {
-	SelectOperated seloper = null;	// 数据库查询对象
-	AdminLineTable adminLine = null;	// 管理线路信息对象
-	
+	private SelectOperated seloper = null;	// 数据库查询对象
+	private AdminLineTable adminLine = null;// 管理线路信息对象
+	private AdminSiteTable adminSite = null;// 管理站点信息对象
 	/**
 	 * 构造函数
 	 * @param con
@@ -26,6 +27,7 @@ public class SelectBusLine extends SelectBase {
 	public SelectBusLine(Connection con) {
 		this.seloper = new SelectOperated(con);
 		this.adminLine = new AdminLineTable(con);
+		this.adminSite = new AdminSiteTable(con);
 	}
 	
 	/**
@@ -36,7 +38,7 @@ public class SelectBusLine extends SelectBase {
 	 * 				站点信息
 	 */
 	public InfoStruct query(String input) {
-		LineAllInfoStruct lineinfo = adminLine.getInfo(input);		// 获取线路基本信息
+		InfoStruct lineinfo = adminLine.getInfo(input);		// 获取线路基本信息
 		TwoLongStruct sidSeq = seloper.getLineSiteSeq(input);	// 获取两条长串字符
 		
 		lineinfo.put(true, getSites(sidSeq.get(true)));	// 把左边的线路名数组放到左边
@@ -52,7 +54,7 @@ public class SelectBusLine extends SelectBase {
 		String[] sites = sidseq.split(",");	// 经过站点的左线路
 		
 		for(int i = 0; i < sites.length; i++)
-			sites[i] = adminLine.getName(Integer.parseInt(sites[i])); // 把线路名替换线路代码字符串
+			sites[i] = adminSite.getName(Integer.parseInt(sites[i])); // 把线路名替换线路代码字符串
 		
 		return sites;
 	}

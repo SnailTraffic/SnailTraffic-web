@@ -30,17 +30,17 @@ public class AdminLineTable extends AdminInfoTableBase {
 	 */
 	protected void initPreparedStatement() {
 		try {
-			String insertsql = "insert into LINEINFO values(?,?,?,?,?,?,?,?,?,?)";
+			String insertsql = "insert into LINEINFO values(?,?,?,?,?,?,?,?,?,?,?)";
 			String deletesql = "delete FROM LINEINFO WHERE sname = ?";
 			String getlidsql = "SELECT lid FROM　LINEINFO　WHERE lname = ?";
 			String updatesql = "update LINEINFO SET sname=?,linterval=?,lfirstopen=?"
-							+ ",llastopen=?,lfirstclose=?,llastclose=?,lprice=?,lcardprice=?,lcompany=?"
+							+ ",llastopen=?,lfirstclose=?,llastclose=?,lprice=?,lcardprice=?,lcompany=?, remark=?"
 							+ "WHERE sname = ?";
 
 			String selLineName = "SELECT lname FROM　LineInfo　 WHERE lid = ?";
 			String selLineInfo = "SELECT lname, LINTERVAL"
 								+ ", LFIRSTOPEN, LLASTOPEN, LFIRSTCLOSE, LLASTCLOSE"
-								+ ", LPRICE, LCARDPRICE, LCOMPANY"
+								+ ", LPRICE, LCARDPRICE, LCOMPANY, remark"
 								+ " FROM　LineInfo"
 								+ " WHERE lname = ?";
 			
@@ -77,6 +77,8 @@ public class AdminLineTable extends AdminInfoTableBase {
 	 * 			刷卡价格
 	 * @param lcompany
 	 * 			所属公司
+	 * @param remark
+	 * 			备注
 	 */
 	public void addLineInfo(int lid
 							, String linename
@@ -87,7 +89,8 @@ public class AdminLineTable extends AdminInfoTableBase {
 							, String llastclose
 							, String lprice
 							, String lcardprice
-							, String lcompany) {
+							, String lcompany
+							, String remark) {
 		try {
 			pre_insert.setInt(1, lid);
 			pre_insert.setString(2, linename);
@@ -99,6 +102,7 @@ public class AdminLineTable extends AdminInfoTableBase {
 			pre_insert.setString(8, lprice);
 			pre_insert.setString(9, lcardprice);
 			pre_insert.setString(10, lcompany);
+			pre_insert.setString(11, remark);
 			pre_insert.executeUpdate();			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -127,7 +131,8 @@ public class AdminLineTable extends AdminInfoTableBase {
 							, String llastclose
 							, String lprice
 							, String lcardprice
-							, String lcompany) {
+							, String lcompany
+							, String remark) {
 		try {
 			pre_update.setString(1, newName);
 			pre_update.setString(2, linterval);
@@ -138,7 +143,8 @@ public class AdminLineTable extends AdminInfoTableBase {
 			pre_update.setString(7, lprice);
 			pre_update.setString(8, lcardprice);
 			pre_update.setString(9, lcompany);
-			pre_update.setString(10, linename);	
+			pre_update.setString(10, linename);
+			pre_update.setString(11, remark);
 			pre_update.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -246,7 +252,7 @@ public class AdminLineTable extends AdminInfoTableBase {
 				lineinfo.setLine(rs.getString(1), rs.getString(2));
 				lineinfo.setTime(rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
 				lineinfo.setPrice(rs.getString(7), rs.getString(8));
-				lineinfo.setCompany(rs.getString(9));
+				lineinfo.setOther(rs.getString(9), rs.getString(10));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

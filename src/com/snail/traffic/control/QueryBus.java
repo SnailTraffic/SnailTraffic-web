@@ -3,6 +3,7 @@ package com.snail.traffic.control;
 import java.sql.Connection;
 
 import com.snail.traffic.persistence.InfoStruct;
+import com.snail.traffic.persistence.LineAllInfoStruct;
 import com.snail.traffic.persistence.OracleBase;
 
 /**
@@ -22,17 +23,17 @@ public class QueryBus {
 	 * @return 查询结果map
 	 * 			类型：EnumMap<ListEnum, String[]>
 	 */
-	public static InfoStruct queryBusSite(String sitename) {
+	public InfoStruct queryBusSite(String sitename) {
 		SelectBase selectSite = new SelectBusSite(con);		// 声明定义一个查询对象
 		return selectSite.query(sitename);	// 返回一个查询结果map
 	}
 	
-	public static InfoStruct queryBusLine(String linename) {
+	public InfoStruct queryBusLine(String linename) {
 		SelectBase selectLine = new SelectBusLine(con);		// 声明定义一个查询对象
 		return selectLine.query(linename);	// 返回一个查询结果map
 	}	
 	
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		// 汉口火车站
 //		ArrayStruct emap = queryBusSite("汉口火车站");
 //		
@@ -49,8 +50,14 @@ public class QueryBus {
 //		else
 //			System.out.println("右边为空");
 		
-		InfoStruct ww = queryBusLine("ed");
+		InfoStruct ww = queryBusLine("59路");
 		String[] e = ww.get(true);
+		System.out.println(ww.lineRange);	
+		
+		for(int i = 0; i < e.length; i++) {
+			System.out.println(e[i]);	
+		}
+		
 		System.out.println(e.length);
-	}
+	}*/
 }

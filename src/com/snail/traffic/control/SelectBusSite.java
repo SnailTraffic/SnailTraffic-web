@@ -5,8 +5,10 @@ import java.util.Arrays;
 
 import com.snail.traffic.persistence.AdminInfoTableBase;
 import com.snail.traffic.persistence.AdminLineTable;
+import com.snail.traffic.persistence.AdminSiteTable;
 import com.snail.traffic.persistence.InfoStruct;
 import com.snail.traffic.persistence.SelectOperated;
+import com.snail.traffic.persistence.SiteInfoStruct;
 import com.snail.traffic.persistence.TwoLongStruct;
 /**
  * 站点查询功能
@@ -14,8 +16,9 @@ import com.snail.traffic.persistence.TwoLongStruct;
  * 3.返回一个按照站点序号从小到大排列的线路数组数组
  */
 class SelectBusSite extends SelectBase {
-	SelectOperated seloper = null;	// 数据库查询对象
-	AdminInfoTableBase adminLine = null; 
+	private SelectOperated seloper = null;	// 数据库查询对象
+	private AdminInfoTableBase adminLine = null;
+	private AdminInfoTableBase adminSite = null;
 	/**
 	 * 构造函数
 	 * @param con
@@ -24,6 +27,7 @@ class SelectBusSite extends SelectBase {
 	public SelectBusSite(Connection con) {
 		seloper = new SelectOperated(con);
 		adminLine = new AdminLineTable(con);
+		adminSite = new AdminSiteTable(con);
 	}
 
 	/**
@@ -37,7 +41,7 @@ class SelectBusSite extends SelectBase {
 		
 		TwoLongStruct lineSeq = seloper.getSiteLineSeq(input);	// 获取两条长串字符
 		
-		InfoStruct siteinfo = new InfoStruct();	// 声明定义站点信息数组
+		InfoStruct siteinfo = new SiteInfoStruct();	// 声明定义站点信息数组
 		
 		siteinfo.put(true, getLines(lineSeq.get(true)));	// 把左边的线路名数组放到左边
 		siteinfo.put(false, getLines(lineSeq.get(false)));	
