@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.snail.traffic.persistence.AdminLineSiteTable;
 import com.snail.traffic.persistence.AdminLineTable;
+import com.snail.traffic.persistence.AdminNextSiteTable;
 import com.snail.traffic.persistence.AdminRelationTableBase;
 import com.snail.traffic.persistence.AdminSiteTable;
 
@@ -19,6 +20,7 @@ public class ReadNormalBus extends ReadSheetBase {
 	private AdminSiteTable st;
 	private AdminLineTable lt;
 	private AdminRelationTableBase lst;
+	private AdminNextSiteTable adnextsite;
 	
 	/**
 	 * 构造函数
@@ -30,6 +32,7 @@ public class ReadNormalBus extends ReadSheetBase {
 		st 	= new AdminSiteTable(con);
 		lt 	= new AdminLineTable(con);
 		lst = new AdminLineSiteTable(con);	
+		adnextsite = new AdminNextSiteTable(con);
 	}
 	
 	/**
@@ -114,6 +117,8 @@ public class ReadNormalBus extends ReadSheetBase {
 			return null;	
 		int sitelen = siteArr.length;	// 站点名数组长度		
 		String sitestr = null;	// 站点名
+		int runleft = 0;	// 是否左行
+		int lastSid = 0;	// 上一个站点id
 		
 		for (int k = 0; k < sitelen; k++) {
 			sitestr = siteArr[k].trim();	// 去除站点名的前后空格
@@ -136,6 +141,15 @@ public class ReadNormalBus extends ReadSheetBase {
 			
 			// 建站点单行线路map
 			setSiteLineMap(lidvalue, sidvalue, lidSeqMap, isleft);	
+			
+			if (lastSid != 0) {
+				if (isleft)
+					runleft = 1;
+				else 
+					runleft = 0;
+				adnextsite.addKeyToValue(lastSid, lidvalue, runleft, sidvalue, 0, 0);
+			}
+			lastSid = sidvalue;
 		}
 		return sidSet;
 	}

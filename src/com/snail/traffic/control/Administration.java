@@ -21,10 +21,9 @@ import com.snail.traffic.persistence.OracleBase;
  * 最后，通过循环map存好数据库
  */
 public class Administration {
-	private OracleBase oracle = new OracleBase();		// 数据库对象
-	private Connection con = oracle.getConnection();	// 获取数据库连接
+	private static OracleBase oracle = new OracleBase();		// 数据库对象
+	private static Connection con = oracle.getConnection();	// 获取数据库连接
 	private AdminSiteLineTable slt = new AdminSiteLineTable(con);	// 站点线路表对象
-	private AddLine al = new AddLine(con);
 	/**
 	 * 导入Excel文件数据API
 	 * @param filename
@@ -55,7 +54,7 @@ public class Administration {
 		System.out.print("导入完成");
 	}
 	
-	public boolean addLine(String linename,
+	public static  boolean addLine(String linename,
 						String linterval,
 						String lfirstopen,
 						String llastopen,
@@ -66,7 +65,8 @@ public class Administration {
 						String lcompany,
 						String remark,
 						String[] leftSite,  //左行站点组成的数组
-						String[] rightSite){
+						String[] rightSite) {
+		AddLine al = new AddLine(con);
 		return al.confirmAddLineInfo(linename,linterval,lfirstopen,llastopen,lfirstclose,llastclose,lprice,lcardprice,lcompany,remark,leftSite,rightSite);
 		
 	}
@@ -75,7 +75,7 @@ public class Administration {
 	public static void main(String[] args){
 		String[] left = {"南李路李桥","南李路板桥","南李路徐家墩"};
 		String[] right = {"南李路徐家墩","南李路板桥","南李路李桥"};
-		Administration a = new Administration();
-		a.addLine("1000路", "342-dd", "242", "l323", "35", "523", "532", "3sdh", "325d", "dgh",left,right );
+		addLine("1000路", "342-dd", "242", "l323", "35", "523", "532", "3sdh", "325d", "dgh",left,right );
+		
 	}
 }

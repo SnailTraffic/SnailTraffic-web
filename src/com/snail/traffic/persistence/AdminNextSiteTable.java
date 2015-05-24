@@ -24,7 +24,7 @@ public class AdminNextSiteTable {
 	 */
 	private void initPreparedStatement() {
 		try {
-			String insert = "insert into NEXTSITE values(?,?,?,?,?)";		
+			String insert = "insert into NEXTSITE values(?,?,?,?,?,?)";		
 			pre_insert = con.prepareStatement(insert);					
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -46,15 +46,17 @@ public class AdminNextSiteTable {
 	 */
 	public void addKeyToValue(int startsid
 							, int lid
+							, int isleft
 							, int endsid
 							, int time
 							, int distance) {
 		try {
 			pre_insert.setInt(1, startsid);		
-			pre_insert.setInt(2, lid);			
-			pre_insert.setInt(3, endsid);
-			pre_insert.setInt(4, time);			
-			pre_insert.setInt(5, distance);	
+			pre_insert.setInt(2, lid);
+			pre_insert.setInt(3, isleft);
+			pre_insert.setInt(4, endsid);
+			pre_insert.setInt(5, time);			
+			pre_insert.setInt(6, distance);	
 			pre_insert.executeUpdate();		
 		} catch (SQLException e) {
 			e.printStackTrace();

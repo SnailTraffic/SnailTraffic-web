@@ -10,7 +10,6 @@ import com.snail.traffic.persistence.AdminSiteTable;
 import com.snail.traffic.persistence.SelectOperated;
 import com.snail.traffic.persistence.TwoLongStruct;
 
-
 	/*
 	 * 1.从前端获取线路名称lname
 	 * 2.数据库检索lname是否已存在
@@ -21,26 +20,29 @@ import com.snail.traffic.persistence.TwoLongStruct;
 	 * 7.在步骤4中,每次选择一个站点,都需要在站点线路表中更新该站点信息
 	 */
 public class AddLine {
+
+	private AdminLineTable adline;		// 线路表管理对象
+	private AdminSiteLineTable adsiteline;// 站点线路表管理对象
 	
-	private Connection con = null;	// 声明数据库连接
+	private AdminSiteTable adsite;		// 站点表管理对象
+	private AdminLineSiteTable alinesite;// 线路站点表管理对象
+	private SelectOperated seloper;		// 视图查询对象
+	private AdminNextSiteTable adnextsite;// 下一站点表管理对象
+	private TwoLongStruct tls;		// 
 	
-	public AddLine(Connection con){
-		this.con = con;
+	public AddLine(Connection con) {
+		adline 		= new AdminLineTable(con);
+		adsiteline 	=  new AdminSiteLineTable(con);
+		adsite 		= new AdminSiteTable(con);            //站点表对象
+		alinesite 	=  new AdminLineSiteTable(con);
+		seloper 	=  new SelectOperated(con);
+		adnextsite 	= new AdminNextSiteTable(con);
 	}
 	
-	AdminLineTable alt = new AdminLineTable(con);            //线路表对象
-	AdminSiteLineTable aslt = new AdminSiteLineTable(con);   //站点线路表对象
-	AdminSiteTable ast = new AdminSiteTable(con);            //站点表对象
-	AdminLineSiteTable alst = new AdminLineSiteTable(con);   //线路站点表对象
-	SelectOperated so = new SelectOperated(con);
-	TwoLongStruct tls = new TwoLongStruct();
-	AdminNextSiteTable anst = new AdminNextSiteTable(con);
-	
-	
 	//判断输入的线路是否已存在,若存在才进行下一步
-	public boolean isExist(String linename){
+	public boolean isExist(String linename) {
 		
-		int line = alt.getId(linename);
+		int line = adline.getId(linename);
 		
 		//不存在该线路信息时添加线路表
 		if(line == 0){
@@ -56,77 +58,150 @@ public class AddLine {
 	}
 	
 	/*前端显示已经添加完成*/
-	public boolean confirmAddLineInfo(String linename,
-								String linterval,
-								String lfirstopen,
-								String llastopen,
-								String lfirstclose,
-								String llastclose, 
-								String lprice, 
-								String lcardprice,
-								String lcompany,
-								String remark,
-								String[] leftSite,  //左行站点组成的数组
-								String[] rightSite){
-									
+	public boolean confirmAddLineInfo(String linename
+									, String linterval
+									, String lfirstopen
+									, String llastopen
+									, String lfirstclose
+									, String llastclose
+									, String lprice 
+									, String lcardprice
+									, String lcompany
+									, String remark
+									, String[] leftSite  //左行站点组成的数组
+									, String[] rightSite) {					
 		//获取lid
-		int lid = alt.getNewId();
-		
-		/*根据线路名删除一条后一个站点表的关系*/
-		anst.deleteLine(linename);
+		int lid = adline.getNewId();
 		
 		//增加线路表信息
-		alt.addLineInfo(lid,linename,linterval,lfirstopen,llastopen,lfirstclose,llastclose,lprice,lcardprice,lcompany,remark);
+		adline.addLineInfo(lid,linename,linterval,lfirstopen,llastopen,lfirstclose,llastclose,lprice,lcardprice,lcompany,remark);
 		
-		//修改线路站点表信息
-		//修改站点线路表信息
-		String lsidseq = null;
-		String rsidseq = null;
-		int sid = 0;
-		
-		for(int i = 0; i < leftSite.length; i++){
-			
-			lsidseq += leftSite[i];                  //获取左行站点组成的字符串
-	
-			sid = ast.getId(leftSite[i]);            //获取sid
-			tls = so.getSiteLineSeq(leftSite[i]);    //根据站点名获取左行和右行线路id字符串
-			String leftStr = tls.get(true);
-			String rightStr = tls.get(false);
-			leftStr = leftStr + "," + lid;           //更新站点线路表
-			aslt.updateKeyToValue(sid,leftStr,rightStr);
-			
-		}
-		for(int i = 0; i< rightSite.length; i++){
-			
-			rsidseq += rightSite[i];                  //获取右行站点组成的字符串
-			
-			sid = ast.getId(rightSite[i]);            //获取sid
-			tls = so.getSiteLineSeq(rightSite[i]);    //根据站点名获取左行和右行线路id字符串
-			String leftStr = tls.get(true);
-			String rightStr = tls.get(false);
-			rightStr = rightStr + "," + lid;           //更新站点线路表
-			aslt.updateKeyToValue(sid,leftStr,rightStr);
-			
-		}
-		alst.addKeyToValue(lid,lsidseq,rsidseq);
-		
+		///////////////////////////////////////////////////
+		// Blyde 的代码 ，杰哥可以忽略
+		String leftSidSeq = addTable(leftSite, lid, true);
+		String rightSidSeq = addTable(rightSite, lid, false);
+		alinesite.addKeyToValue(lid,leftSidSeq,rightSidSeq);	
 		return true;
+		//////////////////////////////////////////////////
+		
+		
+//		//修改站点线路表信息
+//		String lsidseq = "";
+//		String rsidseq = "";
+//		int lsid = 0;
+//		int rsid = 0;
+//		int temp = 0;
+//		
+//		for(int i = 0; i < leftSite.length; i++) {
+//			
+//			temp = lsid;          //上一个站点id
+//			lsid = ast.getId(leftSite[i]);            //获取sid
+//			if(temp != 0){
+//				/**
+//				 * 时间和距离暂时设为0，后期需要前端提供
+//				 */
+//				anst.addKeyToValue(temp,lid,1,lsid,0,0);
+//			}
+//			if(lsidseq.equals("")){
+//				lsidseq = lsid + "";
+//			}
+//			else{
+//				lsidseq += "," + lsid ;
+//			}
+//			
+//			tls = so.getSiteLineSeq(leftSite[i]);    //根据站点名获取左行和右行线路id字符串
+//			String leftStr = tls.get(true);
+//			String rightStr = tls.get(false);
+//			leftStr = leftStr + "," + lid;           //更新站点线路表
+//			aslt.updateKeyToValue(lsid,leftStr,rightStr);
+//			
+//		}
+//
+//
+//		for(int i = 0; i< rightSite.length; i++){
+//			
+//			temp = rsid;
+//			rsid = ast.getId(rightSite[i]);            //获取sid
+//			if(temp != 0){
+//				/**
+//				 * 时间和距离暂时设为0，后期需要前端提供
+//				 */
+//				anst.addKeyToValue(temp,lid,0,rsid,0,0);
+//			}
+//			
+//			if(rsidseq.equals("")){
+//				rsidseq = rsid + "";
+//			}
+//			else{
+//				rsidseq += "," + rsid ;
+//			}
+//			
+//			tls = so.getSiteLineSeq(rightSite[i]);    //根据站点名获取左行和右行线路id字符串
+//			String leftStr = tls.get(true);
+//			String rightStr = tls.get(false);
+//			rightStr = rightStr + "," + lid;           //更新站点线路表
+//			aslt.updateKeyToValue(rsid,leftStr,rightStr);
+//		}	
+//		alst.addKeyToValue(lid,lsidseq,rsidseq);
+//		
+//		return true;
 	}
 	
+	/**
+	 * 循环新加的线路中的站点序列,并加入到数据库中
+	 * @param array
+	 * 			输入的站点序列数组
+	 * @param str
+	 * 			需要修改的站点线路表原序列
+	 * @param lid
+	 * 			线路id
+	 * @param isleft
+	 * 			是左边线路
+	 * @return sidseq
+	 * 				线路站点表中的站点序列
+	 */
+	private String addTable(String[] array, int lid, Boolean isleft) {
+		//修改站点线路表信息
+		String sidseq = "";	// 站点序列
+		String lineseq = null;	// 经过一个站点的线路序列
+		String left = null;
+		String right = null;
+		int sid = 0;	// 站点id
+		int temp = 0;	// 上一个站点id
+		int runleft;
+		
+		for (int i = 0; i < array.length; i++) {						
+			sid = adsite.getId(array[i]);	//获取sid
+			if (temp != 0) {
+				/**
+				 * 时间和距离暂时设为0，后期需要前端提供
+				 */
+				if (isleft)
+					runleft = 1;
+				else
+					runleft = 0;
+				adnextsite.addKeyToValue(temp,lid,runleft,sid,0,0);
+			}
+			if (sidseq.equals(""))
+				sidseq = sid + "";
+			else
+				sidseq += ("," + sid);
+			
+			tls = seloper.getSiteLineSeq(array[i]);    //根据站点名获取左行和右行线路id字符串
+			lineseq = tls.get(isleft);	
+			lineseq += ("," + lid);   //更新站点线路表
+			
+			if (isleft) {
+				left = lineseq;
+				right = tls.get(!isleft);
+			}
+			else {
+				left = tls.get(!isleft);
+				right = lineseq;
+			}
+			adsiteline.updateKeyToValue(sid,left,right);
+			temp = sid; //上一个站点id
+		}
+		return sidseq;
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -8,6 +8,7 @@ package com.snail.traffic.control;
 public class TransitSToEStruct {
 	public String startSite = null;	// 上车站点名	
 	public String endSite	= null;	// 下车站点名
+	public int isLeft		= 0;	// 是否左线
 	public String lineName	= null;	// 线路名
 	public int time 		= 0;
 	public int distance 	= 0;
