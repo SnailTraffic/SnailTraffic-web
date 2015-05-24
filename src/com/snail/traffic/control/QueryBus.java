@@ -43,10 +43,16 @@ public class QueryBus {
 		return selectSite.fuzzySearch(input.trim());
 	}
 	
+	// 换乘查询
+	public Vector<TransitSchemeStruct> queryTransit(String start, String end) {
+		SelectTransit selectTran = new SelectTransit(con);
+		return selectTran.query(start, end);
+	}
+	
 	public static void main(String[] args) {
 		 
 	        String ss = "解放";  
-	        while(ss != "q"){//读取输入流中的字节直到流的末尾返回1  
+	        while(ss != "q"){ //读取输入流中的字节直到流的末尾返回1  
                 //数组缓冲  
 	        	   
                 byte[] b = new byte[1024];  

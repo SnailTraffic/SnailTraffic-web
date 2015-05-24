@@ -1,9 +1,13 @@
 package com.snail.traffic.persistence;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+
+import com.snail.traffic.control.TransitSToEStruct;
 
 /**
  * 查询数据库类
@@ -71,7 +75,7 @@ public class SelectOperated {
 	}
 	
 	/**
-	 * 获取线路站点表左行站点序列数组与右行站点序列数组
+	 * 获取线路站点表左行站点序列与右行站点序列
 	 * @param lname
 	 * 			线路名
 	 * @return linesite
@@ -94,5 +98,38 @@ public class SelectOperated {
 			e.printStackTrace();
 		}  
 		return linesite;
+	}
+	
+	/**
+	 * 通过起始站点名与线路名获得下个站点名与到达下个站点的时间与距离
+	 * @param start
+	 * 			起始站点
+	 * @param line
+	 * 			线路名
+	 * @return
+	 * 
+	 */
+	public TransitSToEStruct getNextSite(String start, String line) {
+		TransitSToEStruct ste = new TransitSToEStruct();
+		CallableStatement proc = null;
+	      try {
+			proc = con.prepareCall("{ call G7.SELECTNEXTSITE(?,?,?,?,?) }");
+		    proc.setString(1, start);
+		    proc.setString(2, line);
+		    proc.registerOutParameter(3, Types.VARCHAR);
+		    proc.registerOutParameter(4, Types.INTEGER);
+		    proc.registerOutParameter(5, Types.INTEGER);
+		    proc.execute();
+		    
+		    ste.endSite = proc.getString(3);	// 下一个站点
+		    ste.time = proc.getInt(4);
+		    ste.distance = proc.getInt(5);
+		    
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		ste.startSite = start;
+		ste.lineName = line;
+		return ste;
 	}
 }

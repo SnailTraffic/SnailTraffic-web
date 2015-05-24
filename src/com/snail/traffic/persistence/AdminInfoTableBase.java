@@ -17,7 +17,7 @@ public abstract class AdminInfoTableBase {
 	protected PreparedStatement pre_getId  = null;	// 获取id预编译
 
 	// 初始化预编译语句
-	protected abstract  void initPreparedStatement();
+	protected abstract void initPreparedStatement();
 	
 	// 删除一行
 	public abstract void delete(Object input);

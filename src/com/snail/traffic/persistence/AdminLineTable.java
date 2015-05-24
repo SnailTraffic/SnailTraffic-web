@@ -35,7 +35,7 @@ public class AdminLineTable extends AdminInfoTableBase {
 			String getlidsql = "SELECT lid FROM　LINEINFO　WHERE lname = ?";
 			String updatesql = "update LINEINFO SET sname=?,linterval=?,lfirstopen=?"
 							+ ",llastopen=?,lfirstclose=?,llastclose=?,lprice=?,lcardprice=?,lcompany=?, remark=?"
-							+ "WHERE sname = ?";
+							+ " WHERE sname = ?";
 
 			String selLineName = "SELECT lname FROM　LineInfo　 WHERE lid = ?";
 			String selLineInfo = "SELECT lname, LINTERVAL"
@@ -44,10 +44,10 @@ public class AdminLineTable extends AdminInfoTableBase {
 								+ " FROM　LineInfo"
 								+ " WHERE lname = ?";
 			
-			pre_insert = con.prepareStatement(insertsql);			
-			pre_update = con.prepareStatement(updatesql);			
+			pre_insert = con.prepareStatement(insertsql);
+			pre_update = con.prepareStatement(updatesql);	
 			pre_delete = con.prepareStatement(deletesql);
-			pre_getId =  con.prepareStatement(getlidsql);
+			pre_getId =  con.prepareStatement(getlidsql);		
 			pre_selLineName = con.prepareStatement(selLineName);
 			pre_selLineInfo = con.prepareStatement(selLineInfo);
 		} catch (SQLException e) {
