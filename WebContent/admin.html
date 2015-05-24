@@ -1,0 +1,29 @@
+<!-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> -->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="author" content="Jimmy Ben Klieve">
+
+    <script src="jquery/jquery-1.11.2.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/admin.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+
+    <title>System Admin Page</title>
+</head>
+<body>
+<form class="form-inline" action="upload.jsp" enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <label for="file">上传数据表</label>
+        <input class="form-control" id="file" type="file" name="upload-filename" value=""/>
+        <button class="btn btn-primary" type="submit">上传</button>
+    </div>
+    <div class="progress-bar progress-bar-striped progress-bar-info">
+        进度
+    </div>
+</form>
+</body>
+</html>

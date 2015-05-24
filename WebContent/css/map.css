@@ -1,0 +1,90 @@
+#map-container {
+    position: relative;
+    overflow: hidden;
+
+    margin: 16px 5%;
+    padding: 0;
+
+    width: auto;
+    height: 80%;
+    min-height: 480px;
+
+    border: solid 1px #555;
+    box-shadow: 4px 4px 12px #888;
+
+    font-family: "Microsoft YaHei", "STHei", "SimSun", sans-serif;
+    font-weight: normal;
+}
+
+#map-container .row {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+#map-canvas {
+    position: relative;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: #1f6fff;
+}
+
+#map-canvas img,
+.google-maps img {
+    max-width: none;
+}
+
+#sidebar-container {
+    position: absolute;
+    top: 46px;
+    bottom: 32px;
+    width: 420px;
+    z-index: 100;
+
+    border: solid 1px #080808;
+    border-left: none;
+    border-bottom-right-radius: 8px;
+
+    overflow: hidden;
+    background-color: rgba(255,255,255,.75);
+    box-shadow: 2px 2px 6px #888;
+}
+
+#sidebar-container .container {
+    padding: 8px;
+    width: 100%;
+}
+
+#search-result-title {
+    padding: 4px 0 2px;
+    margin: 8px 0 4px;
+    border-bottom: solid 2px #ddd;
+    font-size: 24px;
+    font-weight: lighter;
+}
+
+#search-result-desc {
+    width: 100%;
+    color: #888;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.list-wrap { display: inline-block; margin-top: 8px; }
+.list-left-wrap { float: left; width: 43%; }
+.list-right-wrap { float: right; width: 57%; }
+
+.list-wrap ul { list-style: none; padding: 0; }
+.list-wrap li { padding: 4px 0; overflow: hidden; text-overflow: ellipsis; }
+.list-wrap span { display: inline-block; width: 35px; }
+.line-icon li {
+    background: url("../i/line-station.svg") no-repeat;
+    background-size: 28px 28px;
+    padding-left: 48px;
+}
