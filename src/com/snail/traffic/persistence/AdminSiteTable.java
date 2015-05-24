@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 
 /**
  * 站点表管理类
@@ -12,6 +13,7 @@ import java.sql.Statement;
  */
 public class AdminSiteTable extends AdminInfoTableBase {
 	private PreparedStatement pre_selSiteName = null;	// 查询站点名预编译
+	private PreparedStatement pre_selFuzzyResult = null;	// 模糊查询预编译
 	
 	public AdminSiteTable(Connection con) {
 		this.con = con;	// 数据库连接成员变量初始化
@@ -28,12 +30,14 @@ public class AdminSiteTable extends AdminInfoTableBase {
 			String deletesql = "delete FROM SITEINFO WHERE sname = ?";
 			String getsidsql = "SELECT sid FROM　SITEINFO　WHERE sname = ?";
 			String getSiteName = "SELECT sname FROM　SiteInfo　 WHERE sid = ?";
+			String getFuzzyResult = "SELECT sname FROM　SiteInfo　 WHERE sname LIKE ?";
 			
 			pre_insert = con.prepareStatement(insertsql);	
 			pre_update = con.prepareStatement(updatesql);		
 			pre_delete = con.prepareStatement(deletesql);
 			pre_getId = con.prepareStatement(getsidsql);
 			pre_selSiteName = con.prepareStatement(getSiteName);
+			pre_selFuzzyResult = con.prepareStatement(getFuzzyResult);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -156,5 +160,26 @@ public class AdminSiteTable extends AdminInfoTableBase {
 			e.printStackTrace();
 		}
 		return sitename;	
+	}
+	
+	/**
+	 * 获取模糊查询结果
+	 * @param input
+	 * @return
+	 */
+	public Vector<String> getFuzzyResult(String input) {
+		Vector<String> fuzzyResult = new Vector<String>();
+		try {
+			input = "%" + input + "%";
+			pre_selFuzzyResult.setString(1, input);	
+			ResultSet rs = pre_selFuzzyResult.executeQuery();	// 得到结果集
+			
+			while(rs.next()) {
+				fuzzyResult.add(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return fuzzyResult;
 	}
 }

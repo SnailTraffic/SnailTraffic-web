@@ -38,6 +38,8 @@ public class SelectBusLine extends SelectBase {
 	 * 				站点信息
 	 */
 	public InfoStruct query(String input) {
+		input = inputOptimize(input);	// 优化输入参数
+		
 		InfoStruct lineinfo = adminLine.getInfo(input);		// 获取线路基本信息
 		TwoLongStruct sidSeq = seloper.getLineSiteSeq(input);	// 获取两条长串字符
 		
@@ -47,6 +49,23 @@ public class SelectBusLine extends SelectBase {
 		return lineinfo;
 	}
 	
+	/**
+	 * 优化输入字符串
+	 * @param input
+	 * @return
+	 */
+	private String inputOptimize(String input) {
+//		input = input.trim();	// 去除前后空格
+		if (!input.endsWith("路"))	// 判断是否以路结尾
+			input = input.concat("路");
+		return input;
+	}
+	
+	/**
+	 * 获取站点名数组
+	 * @param sidseq
+	 * @return
+	 */
 	private String[] getSites(String sidseq) {
 		if(sidseq == null)	// 站点序列为空时，返回
 			return null;

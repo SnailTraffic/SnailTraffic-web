@@ -1,9 +1,10 @@
 package com.snail.traffic.control;
 
+import java.io.IOException;
 import java.sql.Connection;
+import java.util.Vector;
 
 import com.snail.traffic.persistence.InfoStruct;
-import com.snail.traffic.persistence.LineAllInfoStruct;
 import com.snail.traffic.persistence.OracleBase;
 
 /**
@@ -15,7 +16,7 @@ import com.snail.traffic.persistence.OracleBase;
 public class QueryBus {
 	private static OracleBase oracle = new OracleBase();	// 数据库对象
 	private static Connection con = oracle.getConnection();	// 获取数据库连接
-	
+	private static SelectBusSite selectSite = new SelectBusSite(con);		// 声明定义一个查询对象
 	/**
 	 * 站点查询API
 	 * @param sitename
@@ -23,41 +24,52 @@ public class QueryBus {
 	 * @return 查询结果map
 	 * 			类型：EnumMap<ListEnum, String[]>
 	 */
-	public InfoStruct queryBusSite(String sitename) {
-		SelectBase selectSite = new SelectBusSite(con);		// 声明定义一个查询对象
-		return selectSite.query(sitename);	// 返回一个查询结果map
+	public InfoStruct queryBusSite(String sitename) {	
+		return selectSite.query(sitename.trim());	// 返回一个查询结果map
 	}
 	
+	/**
+	 * 线路查询API
+	 * @param linename
+	 * @return
+	 */
 	public InfoStruct queryBusLine(String linename) {
 		SelectBase selectLine = new SelectBusLine(con);		// 声明定义一个查询对象
-		return selectLine.query(linename);	// 返回一个查询结果map
+		return selectLine.query(linename.trim());	// 返回一个查询结果map
 	}	
 	
-/*	public static void main(String[] args) {
-		// 汉口火车站
-//		ArrayStruct emap = queryBusSite("汉口火车站");
-//		
-//		String[] earr = emap.get(true);
-//		String[] err = emap.get(false);
-//		
-//		if(earr != null)	
-//			System.out.println(earr.length);
-//		else
-//			System.out.println("左边为空");
-//		
-//		if(err != null)
-//			System.out.println(err.length);
-//		else
-//			System.out.println("右边为空");
-		
-		InfoStruct ww = queryBusLine("59路");
-		String[] e = ww.get(true);
-		System.out.println(ww.lineRange);	
-		
-		for(int i = 0; i < e.length; i++) {
-			System.out.println(e[i]);	
-		}
-		
-		System.out.println(e.length);
-	}*/
+	// 模糊查询
+	public static Vector<String> fuzzySearch(String input) {
+		return selectSite.fuzzySearch(input.trim());
+	}
+	
+	public static void main(String[] args) {
+		 
+	        String ss = "解放";  
+	        while(ss != "q"){//读取输入流中的字节直到流的末尾返回1  
+                //数组缓冲  
+	        	   
+                byte[] b = new byte[1024];  
+
+                //读取数据  
+
+                int n = 0;
+				try {
+					System.out.println("请输入：");  
+					n = System.in.read(b);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}  
+
+                //转换为字符串  
+
+                 ss = new String(b,0,n);  
+                
+	    		Vector<String> tt = fuzzySearch(ss);
+	    		for(int i = 0; i < tt.size(); i++) 
+	    			System.out.println(tt.get(i)); 
+	        }
+
+	}
 }

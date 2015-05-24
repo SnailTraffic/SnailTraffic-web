@@ -2,6 +2,7 @@ package com.snail.traffic.control;
 
 import java.sql.Connection;
 import java.util.Arrays;
+import java.util.Vector;
 
 import com.snail.traffic.persistence.AdminInfoTableBase;
 import com.snail.traffic.persistence.AdminLineTable;
@@ -18,7 +19,13 @@ import com.snail.traffic.persistence.TwoLongStruct;
 class SelectBusSite extends SelectBase {
 	private SelectOperated seloper = null;	// 数据库查询对象
 	private AdminInfoTableBase adminLine = null;
-	private AdminInfoTableBase adminSite = null;
+	private AdminSiteTable adminSite = null;
+	
+	private Vector<String> fuzzyResult = new Vector<String>();	// 模糊结果集
+	
+	private String lastInput = null;	// 上一次的输入
+	
+	
 	/**
 	 * 构造函数
 	 * @param con
@@ -73,17 +80,36 @@ class SelectBusSite extends SelectBase {
 	
 	/**
 	 * 模糊查询中根据部分信息,匹配符合的全称(无需判断是否有匹配项)
-	 * @param partname
-	 * 				站点名
-	 * @return fullname
-	 * 				站点全称
+	 * @param input
+	 * 			部分信息
+	 * @return fuzzyResult
+	 * 				模糊结果集
 	 */
-	public String[] getFullName(String partname) {
-		String[] fullname = null;
-		/*数据库操作:根据partName返回匹配的fullName数组*/
+	public Vector<String> fuzzySearch(String input) {
+		if (input.equals(""))
+			return null;
 		
-		return fullname;	
+		// 当前输入以上一次输入为前缀时
+		if (this.lastInput != null && input.startsWith(this.lastInput)) {	// 从Vector中取
+			
+			Vector<String> tempResult = new Vector<String>();	// 临时模糊结果集
+			
+			int lenResult = fuzzyResult.size();
+			
+			String regex = null;
+			
+			for (int i = 0; i < lenResult; i++) {
+				regex = ".*" + input + ".*";	// 正则式
+				
+				if (fuzzyResult.get(i).matches(regex))
+					tempResult.add(fuzzyResult.get(i));
+			}
+			this.fuzzyResult = tempResult;
+		}
+		else
+			fuzzyResult = adminSite.getFuzzyResult(input);	//从数据库中取
+		
+		lastInput = input;
+		return fuzzyResult;	
 	}
-	
-
 }
