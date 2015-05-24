@@ -13,4 +13,5 @@ abstract class SelectBase {
 	 * @return
 	 */
 	public abstract InfoStruct query(String input);
+	
 }
