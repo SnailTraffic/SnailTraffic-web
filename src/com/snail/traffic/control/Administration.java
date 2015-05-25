@@ -28,7 +28,7 @@ public class Administration {
 	 * 导入Excel文件数据API
 	 * @param filename
 	 */
-	public void importExcelData(String filename) {
+	public boolean importExcelData(String filename) {
 		// 新建映射关系
 		Map<String,Integer> siteMap = new HashMap<String,Integer>();	// 站点映射
 		Map<String,Integer> lineMap = new HashMap<String,Integer>();	// 线路映射
@@ -52,8 +52,10 @@ public class Administration {
 			slt.addKeyToValue(key, val.getALlid(), val.getARlid());	
 		}
 		System.out.print("导入完成");
+		return true;
 	}
 	
+	/*增加线路信息*/
 	public static  boolean addLine(String linename,
 						String linterval,
 						String lfirstopen,
@@ -71,11 +73,20 @@ public class Administration {
 		
 	}
 	
+	//删除线路信息
+	public static boolean deleteLine(String linename){
+		DeleteLine dl = new DeleteLine(con);
+		return dl.confirmDeleteLineInfo(linename);
+		
+	}
 	
-	public static void main(String[] args){
+	/*public void main(String[] args){
 		String[] left = {"南李路李桥","南李路板桥","南李路徐家墩"};
 		String[] right = {"南李路徐家墩","南李路板桥","南李路李桥"};
 		addLine("1000路", "342-dd", "242", "l323", "35", "523", "532", "3sdh", "325d", "dgh",left,right );
 		
+	}*/
+	public static void main(String[] args){
+		deleteLine("602路");
 	}
 }

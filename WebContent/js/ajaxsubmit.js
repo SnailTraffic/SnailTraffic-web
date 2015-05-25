@@ -25,11 +25,23 @@ function packFormDataToJson(frm) {
     return o;
 }
 
-function ajaxSubmit(frm, data, fn) {
+function ajaxSubmit(frm, data, successfn, timeout, errorfn) {
     $.ajax({
         url: frm.action,
         type: frm.method,
         data: data,
-        success: fn
+        success: successfn,
+        timeout: timeout,
+        error: errorfn
     });
+}
+
+function ajax(url, meth, data, successfn, errorfn) {
+	$.ajax({
+		url: url,
+		type: meth,
+		data: data,
+		success: successfn,
+		error: errorfn
+	});
 }

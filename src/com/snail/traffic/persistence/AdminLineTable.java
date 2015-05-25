@@ -31,7 +31,7 @@ public class AdminLineTable extends AdminInfoTableBase {
 	protected void initPreparedStatement() {
 		try {
 			String insertsql = "insert into LINEINFO values(?,?,?,?,?,?,?,?,?,?,?)";
-			String deletesql = "delete FROM LINEINFO WHERE sname = ?";
+			String deletesql = "delete FROM LINEINFO WHERE lname = ?";
 			String getlidsql = "SELECT lid FROM¡¡LINEINFO¡¡WHERE lname = ?";
 			String updatesql = "update LINEINFO SET sname=?,linterval=?,lfirstopen=?"
 							+ ",llastopen=?,lfirstclose=?,llastclose=?,lprice=?,lcardprice=?,lcompany=?, remark=?"
@@ -249,7 +249,8 @@ public class AdminLineTable extends AdminInfoTableBase {
 			ResultSet rs = pre_selLineInfo.executeQuery();
 			
 			if(rs.next()) {
-				lineinfo.setLine(rs.getString(1), rs.getString(2));
+				lineinfo.setName(rs.getString(1));
+				lineinfo.setLineRange(rs.getString(2));
 				lineinfo.setTime(rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
 				lineinfo.setPrice(rs.getString(7), rs.getString(8));
 				lineinfo.setOther(rs.getString(9), rs.getString(10));

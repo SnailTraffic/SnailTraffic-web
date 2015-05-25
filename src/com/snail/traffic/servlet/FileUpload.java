@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
+import org.apache.commons.io.output.*;
 
 import com.snail.traffic.control.Administration;
 
@@ -27,6 +28,7 @@ public class FileUpload extends HttpServlet {
      */
     public FileUpload() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -42,60 +44,61 @@ public class FileUpload extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
-		Administration admin = new Administration();	// 后台管理对象
-		
+		PrintWriter out = response.getWriter();;
 		File file;
-		
-		int maxFileSize = 10000 * 1024;		// 文件允许最大值
-		
+		int maxFileSize = 10000 * 1024;
 		int maxMemSize = 10000 * 1024;
 		
 		String contentType = request.getContentType();
 		
 		if (contentType.indexOf("multipart/form-data") >= 0) {
 			DiskFileItemFactory factory = new DiskFileItemFactory();
-			
 			String filePath = request.getRealPath("/uploads");
 			
 			factory.setRepository(new File(filePath));
-			
 			factory.setSizeThreshold(maxMemSize);
 			
 			ServletFileUpload upload = new ServletFileUpload(factory);
+			Administration admin = new Administration();
 			
 			try {
 				List<?> list = upload.parseRequest(request);
-				
 				Iterator<?> i = list.iterator();
-
+				boolean isDone = false;
+				
 				while (i.hasNext()) {
 					FileItem fi = (FileItem)i.next();
-					
 					if (!fi.isFormField()) {
 						String fieldName = fi.getFieldName();
-						
 						String fileName = fi.getName();
-						
 						boolean isInMemory = fi.isInMemory();
-						
 						long sizeInBytes = fi.getSize();
 						
-						if (fileName.lastIndexOf("\\") >= 0)
+						if (fileName.lastIndexOf("\\") >= 0) {
 							fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-						
+						}
 						file = new File(filePath, fileName);
-						
 						fi.write(file);
-						
-						// 获取导入文件的路径
-						String fullPath = file.getPath();	
-						
-						admin.importExcelData(fullPath);
+						/*
+						System.out.println("Uploaded to Path: " + filePath);
+						System.out.println("Uploaded File Name: " + fileName);
+						*/
+						isDone = admin.importExcelData(file.getAbsolutePath());
 					}
 				}
+				
+				if (isDone) {
+					out.write("<script>parent.uploadSuccess()</script>");
+				} else {
+					out.write("<script>parent.uploadFailed()</script>");
+				}
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		out.close();
 	}
 }

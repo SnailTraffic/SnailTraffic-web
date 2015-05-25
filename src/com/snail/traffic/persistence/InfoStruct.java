@@ -28,5 +28,6 @@ public abstract class InfoStruct implements CovertToJson {
 	 */
 	public abstract String[] get(Boolean left);
 	
+	public abstract void setName(String name);
 	
 }

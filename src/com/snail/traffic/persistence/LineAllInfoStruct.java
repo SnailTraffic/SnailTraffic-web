@@ -50,12 +50,15 @@ public class LineAllInfoStruct extends InfoStruct{
 			return rightStrs;
 	}
 	
+	
+	public void setName(String name) {
+		this.lineName = name;
+	}
 	/**
 	 * 设置线路区间
 	 * @param lineRange
 	 */
-	public void setLine(String linename, String lineRange) {
-		this.lineName = linename;
+	public void setLineRange(String lineRange) {
 		this.lineRange = lineRange;
 	}
 	
@@ -101,35 +104,44 @@ public class LineAllInfoStruct extends InfoStruct{
 		JSONObject ret = new JSONObject();
 		StringBuilder sBuilder = new StringBuilder();
 		
-		// Format to description
-		sBuilder
-			.append(leftStrs[0])
-			.append(" ")
-			.append(firstOpen)
-			.append("-")
-			.append(firstClose);
-		
-		sBuilder.append("\n")
-			.append(rightStrs[0])
-			.append(" ")
-			.append(lastOpen)
-			.append("-")
-			.append(lastClose);
-		
-		sBuilder.append("\n")
-			.append("票价 ")
-			.append(price)
-			.append(" | 刷卡 ")
-			.append(cardPrice);
-		
-		sBuilder.append("\n")
-			.append(company);
-		
-		ret.put("title", lineName);
-		ret.put("description", sBuilder.toString());
-		ret.put("left", leftStrs);
-		ret.put("right", rightStrs);
-		ret.put("remark", remark);
+		try {
+			if (leftStrs == null || rightStrs == null) {
+				return null;
+			}
+			
+			// Format to description
+			sBuilder
+				.append(leftStrs[0])
+				.append(" ")
+				.append(firstOpen)
+				.append("-")
+				.append(firstClose);
+			
+			sBuilder.append("\n")
+				.append(rightStrs[0])
+				.append(" ")
+				.append(lastOpen)
+				.append("-")
+				.append(lastClose);
+			
+			sBuilder.append("\n")
+				.append("票价 ")
+				.append(price)
+				.append(" | 刷卡 ")
+				.append(cardPrice);
+			
+			sBuilder.append("\n")
+				.append(company);
+			
+			ret.put("title", lineName);
+			ret.put("description", sBuilder.toString());
+			ret.put("left", leftStrs);
+			ret.put("right", rightStrs);
+			ret.put("remark", remark);
+			
+		} catch (Exception e) {
+			ret = null;
+		}
 		
 		return ret;
 	}

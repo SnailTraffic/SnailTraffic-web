@@ -24,7 +24,7 @@ public class QueryBus {
 	 * @return 查询结果map
 	 * 			类型：EnumMap<ListEnum, String[]>
 	 */
-	public InfoStruct queryBusSite(String sitename) {	
+	public static InfoStruct queryBusSite(String sitename) {	
 		return selectSite.query(sitename.trim());	// 返回一个查询结果map
 	}
 	
@@ -33,7 +33,7 @@ public class QueryBus {
 	 * @param linename
 	 * @return
 	 */
-	public InfoStruct queryBusLine(String linename) {
+	public static InfoStruct queryBusLine(String linename) {
 		SelectBase selectLine = new SelectBusLine(con);		// 声明定义一个查询对象
 		return selectLine.query(linename.trim());	// 返回一个查询结果map
 	}	
@@ -44,11 +44,12 @@ public class QueryBus {
 	}
 	
 	// 换乘查询
-	public Vector<TransitSchemeStruct> queryTransit(String start, String end) {
+	public static Vector<TransitSchemeStruct> queryTransit(String start, String end) {
 		SelectTransit selectTran = new SelectTransit(con);
 		return selectTran.query(start, end);
 	}
 	
+	/*
 	public static void main(String[] args) {
 		 
 	        String ss = "解放";  
@@ -76,6 +77,6 @@ public class QueryBus {
 	    		for(int i = 0; i < tt.size(); i++) 
 	    			System.out.println(tt.get(i)); 
 	        }
-
 	}
+	*/
 }

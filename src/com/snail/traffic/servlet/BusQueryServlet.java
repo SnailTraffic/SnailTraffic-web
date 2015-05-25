@@ -7,25 +7,22 @@ import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 
-import com.snail.traffic.control.QueryBus;
-import com.snail.traffic.persistence.InfoStruct;
+import com.snail.traffic.control.*;
+import com.snail.traffic.persistence.*;
 
 import net.sf.json.*;
 
 /**
  * Servlet implementation class BusExchange
  */
-@WebServlet(
-		urlPatterns = {
-				"/search.jsp"
-		})
-public class BusQuery extends HttpServlet {
+@WebServlet(urlPatterns = { "/search.jsp" })
+public class BusQueryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BusQuery() {
+    public BusQueryServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -63,7 +60,7 @@ public class BusQuery extends HttpServlet {
 				responseJSONObject = this.queryBusStation(stationName);
 				break;
 			default:
-				queryType = 0;
+				queryType = 0; // Wrong
 			}
 			
 			response.setCharacterEncoding("UTF-8");
@@ -71,13 +68,14 @@ public class BusQuery extends HttpServlet {
 			
 			if (responseJSONObject == null) {
 				responseJSONObject = new JSONObject();
+				queryType = -1;
 			}
-	
+			
 			responseJSONObject.put("type", queryType);
 			
 			out = response.getWriter();
 			out.append(responseJSONObject.toString());
-			//out.append(responseJSONObject.toString());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -108,8 +106,7 @@ public class BusQuery extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected JSONObject queryBusLine(String lineName) throws IOException {
-		QueryBus qbus = new QueryBus();
-		InfoStruct ret = qbus.queryBusLine(lineName);
+		InfoStruct ret = QueryBus.queryBusLine(lineName);
 		return ret.toJSON();
 	}
 	
@@ -119,11 +116,7 @@ public class BusQuery extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected JSONObject queryBusStation(String stationName) throws IOException {
-		/**
-		 * 
-		 * 
-		 */
-		
-		return null;
+		InfoStruct ret = QueryBus.queryBusSite(stationName);
+		return ret.toJSON();
 	}
 }

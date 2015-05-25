@@ -52,6 +52,7 @@ class SelectBusSite extends SelectBase {
 		
 		siteinfo.put(true, getLines(lineSeq.get(true)));	// 把左边的线路名数组放到左边
 		siteinfo.put(false, getLines(lineSeq.get(false)));	
+		siteinfo.setName(input);
 		
 		return siteinfo;
 	}
@@ -87,6 +88,9 @@ class SelectBusSite extends SelectBase {
 	 */
 	public Vector<String> fuzzySearch(String input) {
 		if (input.equals(""))
+			return null;
+		
+		if (input.matches("(?i)[^a-z]*[a-z]+[^a-z]*"))
 			return null;
 		
 		// 当前输入以上一次输入为前缀时

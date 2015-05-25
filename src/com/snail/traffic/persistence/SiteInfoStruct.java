@@ -3,10 +3,13 @@ package com.snail.traffic.persistence;
 import net.sf.json.JSONObject;
 
 public class SiteInfoStruct extends InfoStruct {
-
+	private String stationName 	= null;	// 站点名
 	private String [] leftStrs 	= null;	// 左行数组
 	private String [] rightStrs	= null;	// 右行数组
 	
+	public void setName(String name) {
+		this.stationName = name;
+	}
 	/**
 	 * 保存数组信息
 	 * @param left
@@ -36,7 +39,22 @@ public class SiteInfoStruct extends InfoStruct {
 
 	@Override
 	public JSONObject toJSON() {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject ret = new JSONObject();
+		
+		try {
+			if (leftStrs == null || rightStrs == null) {
+				return null;
+			}
+			
+			ret.put("title", stationName);
+			ret.put("description", "");
+			ret.put("left", leftStrs);
+			ret.put("right", rightStrs);
+			ret.put("remark", "");
+		} catch (Exception e) {
+			ret = null;
+		}
+		
+		return ret;
 	}
 }

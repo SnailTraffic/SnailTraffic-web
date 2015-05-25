@@ -8,6 +8,7 @@
 
     <title>蜗牛公交</title>
     <script src="jquery/jquery-1.11.2.min.js"></script>
+    <script src="jquery/jquery.easing.js"></script>
     <script src="http://api.map.baidu.com/api?v=2.0&ak=h4yPyHGeReyzF66u1yIL22fU"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
 
@@ -34,14 +35,27 @@
         #addon-start, #addon-current-loc { background-color: #090; }
         #addon-dest, #addon-home-loc { background-color: #d00; }
         #tab-group1 { padding: 0 32px; }
-        #tab-group1-content { padding: 16px 0 24px; margin: 0 64px 16px; border-bottom: solid 1px #ddd; }
+        #tab-group1-content { position: relative; z-index: 10; padding: 16px 0 24px; margin: 0 64px 16px; border-bottom: solid 1px #ddd; }
 
         .tab-content { text-align: center; font-weight: normal; }
         .footer { margin-top: 16px; padding: 8px 0; text-align: center; font-size: 14px; border-top: solid 1px #1f6fff; }
         .footer span { padding: 0 4px; }
         .footer b { line-height: 12px; text-height: text-size; }
-
+        .statusbar { position: fixed; top: 0; width: 100%; }
+        .statusbar .alert { position: absolute; top: -48px; width: 100%; margin: 0; padding: 8px; }
+    	  #text-hint { position: absolute; left: 0; right: 0; top: 0px; text-align: left; visibility: collapse; }
+    	  #text-hint > li { padding: 4px 15px; margin-bottom: -1px; border: solid 1px #ccc; background-color: #fff; cursor: default; }
+    	  #text-hint > li:last-child { margin-bottom: 0; }
+    	  #text-hint > li:hover { background-color: #fafafa; }
+    	  #text-hint > #text-hint-close { padding: 2px 10px; font-size: 10px; text-align: right; background-color: #eee !important; }
     </style>
+    <script>
+        $(document).ready(function () {
+            changeTab('#tab-group1-tab1');
+            closeSidebar();
+            setSidebarVisibility(false);
+        });
+    </script>
 </head>
 <body>
 <div class="jumbotron">
@@ -60,25 +74,31 @@
                 <li class="active" role="presentation"><a href="#tab-group1-tab1">公交换乘</a></li>
                 <li role="presentation"><a href="#tab-group1-tab2">线路查询</a></li>
                 <li role="presentation"><a href="#tab-group1-tab3">站点查询</a></li>
-                <li role="presentation"><a href="#tab-group1-tab4">一键回家</a></li>
+                <li class="disabled" role="presentation"><a href="#tab-group1-tab4">一键回家</a></li>
             </ul>
         </div>
     </div>
-    <div class="row" id="tab-group1-content">
+    <div class="row" id="tab-group1-content" style="position: relative;">
+	  <ul class="list-group list-unstyled" id="text-hint">
+           	<li>aaa</li>
+           	<li>bbb</li>
+           	<li>ccc</li>
+           	<li>ddd</li>
+           	<li id="text-hint-close"><a role="button">关闭</a></li>
+	  </ul>
         <div class="tab-content tab-group1" id="tab-group1-tab1">
             <form class="form-inline" role="form" method="post" action="search.jsp">
                 <input type="hidden" name="query-type" value="1"/>
-
-                <div class="form-group">
-                    <div class="input-group">
+                <div class="form-group" role="group">
+                    <div class="input-group" role="group">
                         <label class="input-group-addon" id="addon-start" for="bus-exchange-start">起点</label>
-                        <input class="form-control" name="bus-exchange-start" id="bus-exchange-start" type="text"
+                        <input class="form-control want-text-hint" name="bus-exchange-start" id="bus-exchange-start" type="text"
                                tabindex="1" autocomplete="off">
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="submit" tabindex="2" style="border-radius: 0;">走
                             </button>
                         </span>
-                        <input class="form-control" name="bus-exchange-dest" id="bus-exchange-dest" type="text"
+                        <input class="form-control want-text-hint" name="bus-exchange-dest" id="bus-exchange-dest" type="text"
                                tabindex="1" autocomplete="off">
                         <label class="input-group-addon" id="addon-dest" for="bus-exchange-dest">终点</label>
                     </div>
@@ -88,9 +108,8 @@
         <div class="tab-content tab-group1" id="tab-group1-tab2">
             <form class="form-inline" role="form" method="post" action="search.jsp">
                 <input type="hidden" name="query-type" value="2"/>
-
-                <div class="form-group">
-                    <div class="input-group">
+                <div class="form-group" role="group">
+                    <div class="input-group" role="group">
                         <label class="input-group-addon" id="addon-line-no" for="bus-line-no">线路号</label>
                         <input class="form-control" name="bus-line-no" id="bus-line-no" type="text" autocomplete="off">
                         <span class="input-group-btn">
@@ -103,11 +122,10 @@
         <div class="tab-content tab-group1" id="tab-group1-tab3">
             <form class="form-inline" role="form" method="post" action="search.jsp">
                 <input type="hidden" name="query-type" value="3"/>
-
-                <div class="form-group">
-                    <div class="input-group">
+                <div class="form-group" role="group" style="position: relative">
+                    <div class="input-group" role="group">
                         <label class="input-group-addon" id="addon-station-name" for="bus-station-name">站点名</label>
-                        <input class="form-control" name="bus-station-name" id="bus-station-name" type="text"
+                        <input class="form-control want-text-hint" name="bus-station-name" id="bus-station-name" type="text"
                                autocomplete="off">
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="submit">查询</button>
@@ -119,19 +137,18 @@
         <div class="tab-content tab-group1" id="tab-group1-tab4">
             <form class="form-inline" role="form" method="post" action="search.jsp">
                 <input type="hidden" name="query-type" value="1"/>
-
-                <div class="form-group">
-                    <div class="input-group">
+                <div class="form-group" role="group">
+                    <div class="input-group" role="group">
                         <label class="input-group-addon" id="addon-current-loc" for="bus-current-loc">当前位置</label>
-                        <input class="form-control" name="bus-exchange-start" id="bus-current-loc" type="text"
+                        <input class="form-control want-text-hint" name="bus-exchange-start" id="bus-current-loc" type="text"
                                tabindex="1" autocomplete="off">
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="submit" tabindex="2" style="border-radius: 0;">回家
                             </button>
                         </span>
-                        <input class="form-control" name="bus-exchange-dest" id="bus-home-loc" type="text"
+                        <input class="form-control want-text-hint" name="bus-exchange-dest" id="bus-home-loc" type="text"
                                tabindex="1" autocomplete="off">
-                        <label class="input-group-addon" id="addon-home-loc" for="bus-home-loc">家的位置</label>
+          			<label class="input-group-addon" id="addon-home-loc" for="bus-home-loc">家的位置</label>
                     </div>
                 </div>
             </form>
@@ -140,21 +157,23 @@
 </div>
 <div class="container" id="map-container">
     <div class="row">
-        <div class="container" id="sidebar-container">
-            <div id="search-result-title">[TITLE]</div>
-            <div id="search-result-desc">
-                [DESCRIPTION]
-            </div>
-            <div id="search-result-container">
-                <div class="list-wrap list-left-wrap">
-                    <ul>
-                    </ul>
+        <div id="sidebar-window">
+            <div class="container" id="sidebar-container">
+                <div id="search-result-title">&nbsp;</div>
+                <div id="search-result-desc"></div>
+                <div id="search-result-container">
+                    <div class="list-wrap list-left-wrap">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="list-wrap list-right-wrap">
+                        <ul>
+                        </ul>
+                    </div>
                 </div>
-                <div class="list-wrap list-right-wrap">
-                    <ul>
-                    </ul>
-                </div>
             </div>
+            <span id="sidebar-button-close" aria-label="Close Sidebar">&times;</span>
+            <span id="sidebar-button-open" aria-label="Open Sidebar">&raquo;</span>
         </div>
         <div id="map-canvas"></div>
     </div>
@@ -169,7 +188,17 @@
         <b>|</b>
         <span>数据库设计 - 刘国维</span>
     <p>
-    <p>Powered by jQuery, Bootstrap, and Baidu Map API</p>
+    <p>Powered by 
+    	<a href="http://jquery.com/" target="new">jQuery</a>, 
+    	<a href="http://getbootstrap.com/" target="new">Bootstrap</a>, and 
+    	<a href="http://developer.baidu.com/map/" target="new">Baidu Map API</a>
+    </p>
+</div>
+<div class="statusbar" role="status">
+    <div class="alert alert-danger alert-dismissible" id="has-error" role="alert">
+        <span class="glyphicon glyphicon-remove-sign"></span>
+            查询过程好像出了点小问题，请稍后再试。
+    </div>
 </div>
 </body>
 </html>
