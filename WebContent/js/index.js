@@ -63,6 +63,17 @@ function showBusStationResult(json) {
     for (var i = 0; i < emptyItems; i++) {
         rightList.append('<li>&nbsp;</li>');
     }
+    
+    var geoCoder = new BMap.Geocoder();
+	var geoPoint = new BMap.Point();
+	geoCoder.getPoint('武汉市' + json.title + '站', function (point) {
+		if (point) {
+			map.centerAndZoom(point, 16);
+			map.addOverlay(new BMap.Marker(point));
+		} else {
+			map.clearOverlays();
+		}
+	});
 }
 
 function showBusQueryNoResult() {
@@ -133,7 +144,7 @@ $(document).ready(function () {
     	if (text.length > 0) {
     		ajax('vaguesearch.jsp'
     			, 'POST'
-    			, {'pattern' : text}
+    			, {'pattern': text, 'amount': '10'}
     			, function (ret) {
     				emptyTextHint();
     				
@@ -170,7 +181,6 @@ $(document).ready(function () {
             , function (ret) {
                 var type = parseInt(ret.type);
                 clearResult();
-                //alert(ret.type);
                 switch (type) {
 			    case 1: // Exchange
 			        setSidebarVisibility(true);

@@ -63,13 +63,13 @@ public class BusQueryServlet extends HttpServlet {
 				queryType = 0; // Wrong
 			}
 			
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("application/json; charset=utf-8");
-			
 			if (responseJSONObject == null) {
 				responseJSONObject = new JSONObject();
 				queryType = -1;
 			}
+			
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/json; charset=utf-8");
 			
 			responseJSONObject.put("type", queryType);
 			

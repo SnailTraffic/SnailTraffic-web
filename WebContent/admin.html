@@ -8,16 +8,17 @@
 
     <script src="jquery/jquery-1.11.2.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/ajaxsubmit.js"></script>
     <script src="js/admin.js"></script>
 
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <title>System Admin Page</title>
     <style>
-        html, body { min-width: 1024px; padding: 8px 8px 0; }
+        html, body, #login-wrapper { min-width: 1024px; padding: 8px 8px 0; }
         body > .container { width: auto; }
         .margin-top-fix { margin: 16px 0 0 0; }
         .list-unified-style {
-            max-height: 440px;
+            height: 380px;
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -25,46 +26,80 @@
         .list-select { cursor: copy; }
         .list-select li:hover { background-color: #f0f0f0; }
 
-        #upload-progress { width: 0; margin-left: 0; }
-        #upload-error-msg { display: none; }
-        
-        .login-wrapper { 
-        	display: block;
+        #upload-progress {
+            width: 0%;
+            margin: 0;
+        }
+
+	  #upload-error-msg, #new-line-status { display: none; }
+
+        #login-wrapper {
             position: fixed;
             left: 0;
-            right: 0;
             top: 0;
-            bottom: 0;
-            
+            z-index: 1000;
+
+            padding: 0;
             width: 100%;
             height: 100%;
-        	z-index: 10000; 
-        	background-color: rgba(255,255,255,0.85);
+
+            background-color: rgba(255,255,255,.8);
+            text-align: center;
         }
+
+        .__template { display: none; }
     </style>
 </head>
 <body>
-<div class="container login-wrapper">
-	
-</div>
+<!-- a li element template -->
+<ul class="__template" id="new-line-station-template">
+    <li class="list-group-item">
+        <div class="input-group">
+            <label class="sr-only" for="line-station-name">站点名</label>
+            <input class="form-control" id="line-station-name" type="text" value="{stationName}" readonly>
+            <span class="input-group-addon">
+            <label class="checkbox-inline">
+                <input id="line-stop-left" type="checkbox" checked>左行
+            </label>
+            </span>
+            <span class="input-group-addon">
+            <label class="checkbox-inline">
+                <input id="line-stop-right" type="checkbox" checked>右行
+            </label>
+            </span>
+            <span class="input-group-btn">
+            <button class="btn btn-default btn-moveup" type="button" aria-label="上移">
+                <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default btn-movedown" type="button" aria-label="下移">
+                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default btn-delete" type="button" aria-label="删除">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            </span>
+        </div>
+    </li>
+</ul>
+<!-- template end -->
 <div class="container">
     <div class="panel panel-primary">
         <div class="panel-heading">上传数据表文件</div>
         <div class="panel-body">
-            <form class="form-horizontal" action="upload.jsp" enctype="multipart/form-data" method="post" target="hidden_frame">
+            <form class="form-horizontal" action="upload.jsp" enctype="multipart/form-data" method="post" target="upload-call">
                 <div class="row">
                     <div class="col-xs-10">
                         <label class="sr-only" for="select-file">选择文件</label>
-                        <input class="form-control" id="select-file" type="file" name="upload-filename" value="" multiple/>
+                        <input class="form-control" id="select-file" type="file" name="upload-filename" value=""/>
                     </div>
                     <div class="col-xs-2 text-right">
                         <button class="btn btn-primary" id="button-upload" type="submit">上传</button>
                     </div>
                 </div>
-                <iframe id="hidden_name" name="hidden_frame" style="display: none;"></iframe>
+                <iframe name="upload-call" style="display: none"></iframe>
             </form>
             <div class="progress margin-top-fix">
-                <div class="progress-bar progress-bar-success" id="upload-progress"
+                <div class="progress-bar progress-bar-striped progress-bar-warning" id="upload-progress"
                      role="progressbar" aria-valuemin="0" aria-valuemax="100">
                 </div>
             </div>
@@ -89,68 +124,64 @@
                         <label class="sr-only" for="new-linename-text">线路名称</label>
                         <input class="form-control" id="new-linename-text" name="line-name" type="text">
                     </div>
-                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                    <span class="sr-only" id="a">(success)</span>
+                    <span class="glyphicon form-control-feedback" aria-hidden="true" id="new-line-status"></span>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-3">
                         <div class="panel panel-default">
-                            <div class="panel-heading">
-					所有车站
-                                <span class="glyphicon glyphicon-refresh" role="button" id="refresh-stations" style="float: right"></span>
+                            <div class="panel-heading">选择添加车站</div>
+                            <div class="panel-body">
+                                <label class="sr-only" for="new-line-search">搜索站点名称</label>
+                                <input class="form-control" id="new-line-search" type="text" placeholder="输入站点名以添加站点到列表" autocomplete="off">
                             </div>
-                            <ul class="list-group list-unified-style list-select">
-                                <li class="list-group-item">A</li>
-                                <li class="list-group-item">B</li>
-                                <li class="list-group-item">C</li>
-                                <li class="list-group-item">D</li>
-                                <li class="list-group-item">E</li>
-                                <li class="list-group-item">F</li>
-                                <li class="list-group-item">G</li>
+                            <ul class="list-group list-unified-style list-select" id="new-line-station-select">
                             </ul>
                         </div>
                     </div>
                     <div class="col-xs-9">
                         <div class="panel panel-default">
-                            <div class="panel-heading">右行线路车站</div>
-                            <ol class="list-group list-unified-style">
-                                <!-- a li element template -->
-                                <li class="list-group-item">
-                                    <div class="input-group">
-                                        <input class="form-control" id="line-station-name" type="text" value="AAA" readonly>
-                                        <span class="input-group-addon">
-                                            <label class="checkbox-inline">
-                                                <input id="line-stop-left" type="checkbox" checked>左行
-                                            </label>
-                                        </span>
-                                        <span class="input-group-addon">
-                                            <label class="checkbox-inline">
-                                                <input id="line-stop-right" type="checkbox" checked>右行
-                                            </label>
-                                        </span>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button" aria-label="上移">
-                                                <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                                            </button>
-                                            <button class="btn btn-default" type="button" aria-label="下移">
-                                                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                                            </button>
-                                            <button class="btn btn-default" type="button" aria-label="删除">
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </li>
-                                <!-- template end -->
+                            <div class="panel-heading">线路经过站点列表</div>
+                            <ol class="list-group" id="new-line-list" style="list-style: decimal inside;">
                             </ol>
                         </div>
                     </div>
                 </div>
                 <div style="text-align: right">
-                <button class="btn btn-primary" type="submit">新增</button>
+                <button class="btn btn-primary btn-justify" type="submit">新增</button>
                 </div>
             </form>
         </div>
+    </div>
+</div>
+<div class="container-fluid" id="login-wrapper">
+    <div class="col-xs-6 col-xs-offset-3" style="top: 30%;">
+    <div class="panel panel-primary">
+        <div class="panel-heading"><b>登陆</b></div>
+        <div class="panel-body">
+            <form id="login-form" action="login.jsp" method="post">
+                <div class="form-group row text-left">
+                    <div class="col-xs-2 col-xs-offset-1"><label for="username">用户名</label></div>
+                    <div class="col-xs-8">
+                        <input class="form-control" id="username" name="username" type="text">
+                    </div>
+                </div>
+                <div class="form-group row text-left">
+                    <div class="col-xs-2 col-xs-offset-1"><label for="password">密码</label></div>
+                    <div class="col-xs-8">
+                        <input class="form-control" id="password" name="password" type="password">
+                    </div>
+                </div>
+                <div class="form-group row text-right">
+                    <div class="col-xs-8 col-xs-offset-1 text-left" id="login-error-msg" style="color: #f00;">
+
+                    </div>
+                    <div class="col-xs-3">
+                        <button class="btn btn-primary" id="login" type="submit">登陆</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     </div>
 </div>
 </body>

@@ -19,6 +19,7 @@ function openSidebar() {
     });
 }
 
+var map; // global
 $(document).ready(function (e) {
 	$('#sidebar-button-close').click(function (e) {
         closeSidebar();
@@ -27,18 +28,18 @@ $(document).ready(function (e) {
     $('#sidebar-button-open').click(function (e) {
         openSidebar();
     });
-	
-    var map;
 
     try {
         map = new BMap.Map('map-canvas', {minZoom: 12});
 
+        map.setCurrentCity('武汉');
         map.centerAndZoom('武汉', 11);
         map.enableScrollWheelZoom(true);
 
         map.addControl(new BMap.MapTypeControl({anchor: BMAP_ANCHOR_TOP_LEFT}));
         map.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT}));
         map.addControl(new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT}));
+        map.addControl(new BMap.GeolocationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT}));
 
     } catch (exception) {
         // Do nothing

@@ -14,7 +14,9 @@ public class OracleBase {
 	
 	private String driver = "oracle.jdbc.driver.OracleDriver";	// 驱动名
 	private String url = "jdbc:oracle:thin:@127.0.0.1:1521:test";	// 数据库地址
+	//private String url = "jdbc:oracle:thin:@DELLT410:1521:DB805";	// 数据库地址
 	private String user = "g7";		// 用户名
+	//private String user = "Group7";		// 用户名
 	private String pass = "123";	// 密码
 	private Connection conn;// 连接
 	

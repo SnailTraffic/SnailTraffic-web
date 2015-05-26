@@ -41,13 +41,19 @@ public class VagueSearchServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String pattern = request.getParameter("pattern");
+		int amount;
+		try {
+			amount = Integer.parseInt(request.getParameter("amount"));
+		} catch (Exception e) {
+			amount = 100;
+		}
 		Vector<String> v = QueryBus.fuzzySearch(pattern);
 		
 		JSONObject responseJSONObject = new JSONObject();
 		JSONArray arr = new JSONArray();
 		
 		if ( v != null) {
-			for (int i = 0; i < 10 && i < v.size(); i++) {
+			for (int i = 0; i < amount && i < v.size(); i++) {
 				arr.add(v.elementAt(i));
 			}
 		}
