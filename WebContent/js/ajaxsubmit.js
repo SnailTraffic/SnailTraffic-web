@@ -30,6 +30,7 @@ function ajaxSubmit(frm, data, successfn, timeout, errorfn) {
         url: frm.action,
         type: frm.method,
         data: data,
+        async: true,
         success: successfn,
         timeout: timeout,
         error: errorfn
@@ -41,6 +42,7 @@ function ajax(url, meth, data, successfn, errorfn) {
         url: url,
         type: meth,
         data: data,
+        async: true,
         success: successfn,
         error: errorfn
     });

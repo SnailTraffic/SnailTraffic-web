@@ -8,32 +8,41 @@
 
     <script src="jquery/jquery-1.11.2.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/bootstrap-toggle.min.js"></script>
     <script src="js/ajaxsubmit.js"></script>
     <script src="js/admin.js"></script>
+    <script src="js/admin-ledit.js"></script>
 
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-toggle.min.css">
     <title>System Admin Page</title>
     <style>
-        html, body, #login-wrapper { min-width: 1024px; padding: 8px 8px 0; }
+        html, body, #login-wrapper { min-width: 800px; padding: 8px 8px 0; }
         body > .container { width: auto; }
-        .margin-top-fix { margin: 16px 0 0 0; }
-        .list-unified-style {
-            height: 380px;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+        .progress-margin-fix { margin: 16px 0 0; }
+        .panel-margin-bottom-fix { margin-bottom: 0; }
 
         .list-select { cursor: copy; }
         .list-select li:hover { background-color: #f0f0f0; }
 
         #upload-progress {
-            width: 0%;
+            width: 0;
             margin: 0;
         }
 
-      #upload-error-msg, #new-line-status { display: none; }
+        #upload-error-msg,
+        #ledit-station-template,
+        #ledit-line-status,
+        #ledit-linename-new-wrapper,
+        .panel-collapse {
+            display: none;
+        }
+
+        #ledit-linename-loaded { margin-right: 8px; }
 
         #login-wrapper {
+            display: none;
+
             position: fixed;
             left: 0;
             top: 0;
@@ -47,41 +56,23 @@
             text-align: center;
         }
 
-        .__template { display: none; }
+        .open-close-checkbox-wrapper {
+            position: absolute;
+            right: 42px;
+
+            display: inline-block;
+            text-align: right;
+        }
+
+        #ledit-station-select, #ledit-station-list { overflow-x: hidden; overflow-y: auto; }
+        #ledit-station-select { height: 380px; }
+        #ledit-station-list { height: 444px; }
+        #ledit-msg { margin-right: 64px; overflow: hidden; }
+        #ledit-msg b { padding: 0 8px; }
+
     </style>
 </head>
 <body>
-<!-- a li element template -->
-<ul class="__template" id="new-line-station-template">
-    <li class="list-group-item">
-        <div class="input-group">
-            <label class="sr-only" for="line-station-name">站点名</label>
-            <input class="form-control" id="line-station-name" type="text" value="{stationName}" readonly>
-            <span class="input-group-addon">
-            <label class="checkbox-inline">
-                <input id="line-stop-left" type="checkbox" checked>左行
-            </label>
-            </span>
-            <span class="input-group-addon">
-            <label class="checkbox-inline">
-                <input id="line-stop-right" type="checkbox" checked>右行
-            </label>
-            </span>
-            <span class="input-group-btn">
-            <button class="btn btn-default btn-moveup" type="button" aria-label="上移">
-                <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-            </button>
-            <button class="btn btn-default btn-movedown" type="button" aria-label="下移">
-                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-            </button>
-            <button class="btn btn-default btn-delete" type="button" aria-label="删除">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            </button>
-            </span>
-        </div>
-    </li>
-</ul>
-<!-- template end -->
 <div class="container">
     <div class="panel panel-primary">
         <div class="panel-heading">上传数据表文件</div>
@@ -98,7 +89,7 @@
                 </div>
                 <iframe name="upload-call" style="display: none"></iframe>
             </form>
-            <div class="progress margin-top-fix">
+            <div class="progress progress-margin-fix">
                 <div class="progress-bar progress-bar-striped progress-bar-warning" id="upload-progress"
                      role="progressbar" aria-valuemin="0" aria-valuemax="100">
                 </div>
@@ -114,74 +105,139 @@
     </div>
 </div>
 <div class="container">
-    <div class="panel panel-primary">
-        <div class="panel-heading">新增线路</div>
-        <div class="panel-body">
+    <div class="panel panel-primary" id="ledit-pannel-root">
+        <div class="panel-heading">
+            <span>线路编辑</span>
+            <div class="open-close-checkbox-wrapper">
+            <input class="open-close-checkbox" type="checkbox" data-toggle="toggle" data-size="mini" data-width="50"
+                   data-on="展开" data-off="折叠" data-onstyle="success" data-offstyle="danger">
+            </div>
+        </div>
+        <div class="panel-body panel-collapse">
             <form action="lineadd.jsp" method="post">
-                <div class="form-group has-feedback" id="new-linename">
+                <div class="form-group" id="ledit-linename-wrapper">
+                    <label class="sr-only" for="ledit-linename">线路名称</label>
+                    <label class="sr-only" for="ledit-linename-new">新线路名称</label>
                     <div class="input-group">
                         <span class="input-group-addon">线路名称</span>
-                        <label class="sr-only" for="new-linename-text">线路名称</label>
-                        <input class="form-control" id="new-linename-text" name="line-name" type="text">
+                        <input class="form-control" id="ledit-linename" name="line-name" type="text"
+                               placeholder="输入线路名称" autocomplete="off">
+                        <span class="input-group-addon" id="ledit-line-status">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </span>
+                        <span class="input-group-btn" id="ledit-line-load">
+                            <button class="btn btn-primary disabled" type="button">载入线路信息</button>
+                        </span>
                     </div>
-                    <span class="glyphicon form-control-feedback" aria-hidden="true" id="new-line-status"></span>
+                </div>
+                <div class="form-group has-feedback" id="ledit-linename-new-wrapper">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <label class="checkbox-inline">
+                                <input id="ledit-linename-alt" type="checkbox">修改线路名称
+                            </label>
+                        </span>
+                        <input class="form-control" id="ledit-linename-new" name="line-name-new" type="text"
+                               placeholder="输入新线路名称" readonly>
+                    </div>
+                    <span class="form-control-feedback glyphicon" id="ledit-line-new-status"></span>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-3">
-                        <div class="panel panel-default">
+                        <div class="panel panel-default panel-margin-bottom-fix">
                             <div class="panel-heading">选择添加车站</div>
                             <div class="panel-body">
-                                <label class="sr-only" for="new-line-search">搜索站点名称</label>
-                                <input class="form-control" id="new-line-search" type="text" placeholder="输入站点名以添加站点到列表" autocomplete="off">
+                                <label class="sr-only" for="ledit-station-search">搜索站点名称</label>
+                                <input class="form-control" id="ledit-station-search" type="text"
+                                       placeholder="输入站点名以添加到列表" autocomplete="off">
                             </div>
-                            <ul class="list-group list-unified-style list-select" id="new-line-station-select">
+                            <ul class="list-group list-select" id="ledit-station-select">
+                                <li class="list-group-item">AAAAAA</li>
+                                <li class="list-group-item">BBBBB</li>
+                                <li class="list-group-item">CCCCC</li>
+                                <li class="list-group-item">DDDDD</li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-xs-9">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">线路经过站点列表</div>
-                            <ol class="list-group" id="new-line-list" style="list-style: decimal inside;">
+                        <div class="panel panel-default panel-margin-bottom-fix">
+                            <div class="panel-heading"><b id="ledit-linename-loaded"></b>经过站点列表</div>
+                            <ol class="list-group" id="ledit-station-list" style="list-style: decimal inside;">
                             </ol>
                         </div>
                     </div>
                 </div>
                 <div style="text-align: right">
-                <button class="btn btn-primary btn-justify" type="submit">新增</button>
+                    <span id="ledit-msg"></span>
+                    <button class="btn btn-success ledit-submit" id="ledit-btn-add" type="button" value="1">确认新增</button>
+                    <button class="btn btn-warning ledit-submit" id="ledit-btn-alter" type="button" value="0">确认修改</button>
+                    <button class="btn btn-danger ledit-submit" id="ledit-btn-remove" type="button" value="-1">确认删除</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<div class="container-fluid" id="login-wrapper">
-    <div class="col-xs-6 col-xs-offset-3" style="top: 30%;">
-    <div class="panel panel-primary">
-        <div class="panel-heading"><b>登陆</b></div>
-        <div class="panel-body">
-            <form id="login-form" action="login.jsp" method="post">
-                <div class="form-group row text-left">
-                    <div class="col-xs-2 col-xs-offset-1"><label for="username">用户名</label></div>
-                    <div class="col-xs-8">
-                        <input class="form-control" id="username" name="username" type="text">
-                    </div>
-                </div>
-                <div class="form-group row text-left">
-                    <div class="col-xs-2 col-xs-offset-1"><label for="password">密码</label></div>
-                    <div class="col-xs-8">
-                        <input class="form-control" id="password" name="password" type="password">
-                    </div>
-                </div>
-                <div class="form-group row text-right">
-                    <div class="col-xs-8 col-xs-offset-1 text-left" id="login-error-msg" style="color: #f00;">
 
-                    </div>
-                    <div class="col-xs-3">
-                        <button class="btn btn-primary" id="login" type="submit">登陆</button>
-                    </div>
-                </div>
-            </form>
+<!-- a li element template -->
+<ul id="ledit-station-template">
+    <!--
+    <li class="list-group-item">
+        <div class="input-group">
+            <input class="form-control line-station-name" type="text" value="{stationName}" aria-label="站点名">
+            <span class="input-group-addon">
+                <label class="checkbox-inline">
+                    <input class="line-stop-left" type="checkbox" {left}>左行
+                </label>
+            </span>
+            <span class="input-group-addon">
+                <label class="checkbox-inline">
+                    <input class="line-stop-right" type="checkbox" {right}>右行
+                </label>
+            </span>
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-moveup" type="button" aria-label="上移">
+                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                </button>
+                <button class="btn btn-default btn-movedown" type="button" aria-label="下移">
+                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                </button>
+                <button class="btn btn-default btn-delete" type="button" aria-label="删除">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </span>
         </div>
-    </div>
+    </li>
+    -->
+</ul>
+<!-- template end -->
+<div class="container-fluid" id="login-wrapper">
+    <div style="position: relative; top: 32%; width: 400px; margin: auto;">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><b>管理员登陆</b></div>
+            <div class="panel-body">
+                <form id="login-form" action="login.jsp" method="post">
+                    <div class="form-group row text-left">
+                        <div class="col-xs-3"><label for="username">用户名</label></div>
+                        <div class="col-xs-9">
+                            <input class="form-control" id="username" name="username" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group row text-left">
+                        <div class="col-xs-3"><label for="password">密码</label></div>
+                        <div class="col-xs-9">
+                            <input class="form-control" id="password" name="password" type="password">
+                        </div>
+                    </div>
+                    <div class="form-group row text-right" style="margin-bottom: 0;">
+                        <div class="col-xs-8 col-xs-offset-1 text-left" id="login-error-msg" style="color: #f00;">
+                        </div>
+                        <div class="col-xs-3">
+                            <button class="btn btn-primary" id="login" type="submit">登陆</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 </body>
