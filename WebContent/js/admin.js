@@ -10,26 +10,26 @@ function newLineStationItem(stationName) {
 }
 
 $(document).ready(function (e) {
-	$('#button-upload').click(function (e) {
-		uploading = true;
-		$('#upload-progress').css('margin-left', '-20%');
-		$('#upload-progress').css('width', '20%');
-		var ss = function() {
-			$('#upload-progress').animate({marginLeft: '120%'}, 5000, function () {
-				if (uploading) {
-					$(this).css('margin-left', '-20%');
-					ss();
-				} else { 
-					$(this).css('margin-left', '0')
-					$(this).css('width', '1%');
-					$(this).animate({width: '100%'}, 2000);
-				}
-			});
-		}
-		ss();
-	});
-	
-	$('#login-form').bind('submit', function (e) {
+    $('#button-upload').click(function (e) {
+        uploading = true;
+        $('#upload-progress').css('margin-left', '-20%');
+        $('#upload-progress').css('width', '20%');
+        var ss = function() {
+            $('#upload-progress').animate({marginLeft: '120%'}, 5000, function () {
+                if (uploading) {
+                    $(this).css('margin-left', '-20%');
+                    ss();
+                } else { 
+                    $(this).css('margin-left', '0')
+                    $(this).css('width', '1%');
+                    $(this).animate({width: '100%'}, 2000);
+                }
+            });
+        }
+        ss();
+    });
+    
+    $('#login-form').bind('submit', function (e) {
         ajaxSubmit(this
             , packFormDataToJson(this)
             , function (ret) {
@@ -51,55 +51,55 @@ $(document).ready(function (e) {
 
         return false;
     });
-	
-	$('#new-linename-text').bind('input propertychange', function () {
-		var icon = $('#new-line-status');
-		var text = $(this).val();
-		if (text.length > 0) {
-			ajax('search.jsp'
-				, 'POST'
-				, {'query-type': '2', 'bus-line-no': text}
-				, function (ret) {
-					icon.css('display', 'inline').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
-					$('#new-line-name').removeClass('has-danger').removeClass('has-success');
-					var type = parseInt(ret.type);
-					if (ret.type != -1) {
-						icon.addClass('glyphicon-remove');
-						$('#new-line-name').addClass('has-danger');
-					} else {
-						icon.addClass('glyphicon-ok');
-						$('#new-line-name').addClass('has-success');
-					}
-				}
-				
-				, function (XMLHttpRequest, textStatus, errorThrown) {
-					icon.css('display', 'none').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
-					$('#new-line-name').removeClass('has-success').removeClass('has-error');
-    			}
-			);
-		} else {
-			icon.css('display', 'none').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
-			$('#new-line-name').removeClass('has-error').removeClass('has-success');
-		}
-	});
-	
-	$('#new-line-search').bind('input propertychange', function () {
+    
+    $('#new-linename-text').bind('input propertychange', function () {
+        var icon = $('#new-line-status');
+        var text = $(this).val();
+        if (text.length > 0) {
+            ajax('search.jsp'
+                , 'POST'
+                , {'query-type': '2', 'bus-line-no': text}
+                , function (ret) {
+                    icon.css('display', 'inline').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
+                    $('#new-line-name').removeClass('has-danger').removeClass('has-success');
+                    var type = parseInt(ret.type);
+                    if (ret.type != -1) {
+                        icon.addClass('glyphicon-remove');
+                        $('#new-line-name').addClass('has-danger');
+                    } else {
+                        icon.addClass('glyphicon-ok');
+                        $('#new-line-name').addClass('has-success');
+                    }
+                }
+                
+                , function (XMLHttpRequest, textStatus, errorThrown) {
+                    icon.css('display', 'none').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
+                    $('#new-line-name').removeClass('has-success').removeClass('has-error');
+                }
+            );
+        } else {
+            icon.css('display', 'none').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
+            $('#new-line-name').removeClass('has-error').removeClass('has-success');
+        }
+    });
+    
+    $('#new-line-search').bind('input propertychange', function () {
         var listRoot = $('#new-line-station-select');
         var text = $(this).val();
         if (text.length > 0) {
-	        ajax('vaguesearch.jsp'
-    			, 'POST'
-    			, {'pattern': text, 'amount': '100'}
-    			, function (ret) {
-    				listRoot.find('li').remove();
-    				for (var i = 0; i < ret.list.length; i++) {
-    					listRoot.append('<li class="list-group-item">' + ret.list[i] + '</li>')
-    				}
-    			}
-    			, function (XMLHttpRequest, textStatus, errorThrown) {
-    				listRoot.find('li').remove();
-    			}
-    		);
+            ajax('vaguesearch.jsp'
+                , 'POST'
+                , {'pattern': text, 'amount': '100'}
+                , function (ret) {
+                    listRoot.find('li').remove();
+                    for (var i = 0; i < ret.list.length; i++) {
+                        listRoot.append('<li class="list-group-item">' + ret.list[i] + '</li>')
+                    }
+                }
+                , function (XMLHttpRequest, textStatus, errorThrown) {
+                    listRoot.find('li').remove();
+                }
+            );
         }
     });
 

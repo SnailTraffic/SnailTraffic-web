@@ -37,11 +37,11 @@ function ajaxSubmit(frm, data, successfn, timeout, errorfn) {
 }
 
 function ajax(url, meth, data, successfn, errorfn) {
-	$.ajax({
-		url: url,
-		type: meth,
-		data: data,
-		success: successfn,
-		error: errorfn
-	});
+    $.ajax({
+        url: url,
+        type: meth,
+        data: data,
+        success: successfn,
+        error: errorfn
+    });
 }

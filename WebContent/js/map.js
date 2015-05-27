@@ -21,7 +21,7 @@ function openSidebar() {
 
 var map; // global
 $(document).ready(function (e) {
-	$('#sidebar-button-close').click(function (e) {
+    $('#sidebar-button-close').click(function (e) {
         closeSidebar();
     });
 
