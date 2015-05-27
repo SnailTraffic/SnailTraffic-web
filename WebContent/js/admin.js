@@ -13,9 +13,9 @@ $(document).ready(function (e) {
     $('#button-upload').click(function (e) {
         uploading = true;
         var progressBar = $('#upload-progress');
-        progress.css('margin-left', '-20%').css('width', '20%');
+        progressBar.css('margin-left', '-20%').css('width', '20%');
         var ss = function() {
-            progress.animate({marginLeft: '120%'}, 5000, function () {
+            progressBar.animate({marginLeft: '120%'}, 5000, function () {
                 if (uploading) {
                     $(this).css('margin-left', '-20%');
                     ss();
@@ -25,7 +25,7 @@ $(document).ready(function (e) {
                         .animate({width: '100%'}, 2000);
                 }
             });
-        }
+        };
         ss();
     });
     
@@ -64,7 +64,7 @@ $(document).ready(function (e) {
                     icon.css('display', 'inline').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
                     input.removeClass('has-danger').removeClass('has-success');
                     var type = parseInt(ret.type);
-                    if (ret.type != -1) {
+                    if (type != -1) {
                         icon.addClass('glyphicon-remove');
                         input.addClass('has-danger');
                     } else {
@@ -110,8 +110,10 @@ $(document).ready(function (e) {
     });
 
     // Line station list operations
+    // Because of items in this list are created dynamically, so should use .delegate method
     // Move up
-    $('#new-line-list').delegate('li .btn-moveup', 'click', function (e) {
+    var $newlinelist = $('#new-line-list');
+    $newlinelist.delegate('li .btn-moveup', 'click', function (e) {
         var item = $(this).parents('li');
         var prev = item.prev();
         if (prev.length > 0) {
@@ -120,9 +122,8 @@ $(document).ready(function (e) {
     });
 
     // Move down
-    $('#new-line-list').delegate('li .btn-movedown', 'click', function (e) {
+    $newlinelist.delegate('li .btn-movedown', 'click', function (e) {
         var item = $(this).parents('li');
-        var next = $(this).parents('li');
         var next = item.next();
         if (next.length > 0) {
             next.after(item);
@@ -130,7 +131,7 @@ $(document).ready(function (e) {
     });
 
     // Delete
-    $('#new-line-list').delegate('li .btn-delete', 'click', function (e) {
+    $newlinelist.delegate('li .btn-delete', 'click', function (e) {
         var item = $(this).parents('li');
         item.remove();
     });

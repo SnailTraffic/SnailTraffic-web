@@ -19,7 +19,38 @@ function openSidebar() {
     });
 }
 
-var map; // global
+function drawBusLine(lineName, left) {
+    if (map) {
+        var busline = new BMap.BusLineSearch(map, {
+            renderOptions: {map: map},
+            onGetBusListComplete: function (result) {
+                if (result) {
+                    var line = result.getBusListItem(left ? 0 : 1);
+                    busline.getBusLine(line);
+                }
+            }
+        });
+
+        busline.getBusList(lineName);
+    }
+}
+
+function drawBusStation(stationName) {
+    // Not so accurate
+    if (map) {
+        var geoCoder = new BMap.Geocoder();
+        geoCoder.getPoint('武汉市' + stationName, function (point) {
+            if (point) {
+                map.centerAndZoom(point, 15);
+                map.addOverlay(new BMap.Marker(point));
+            } else {
+                map.clearOverlays();
+            }
+        });
+    }
+}
+
+var map = null; // global
 $(document).ready(function (e) {
     $('#sidebar-button-close').click(function (e) {
         closeSidebar();
@@ -42,6 +73,6 @@ $(document).ready(function (e) {
         map.addControl(new BMap.GeolocationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT}));
 
     } catch (exception) {
-        // Do nothing
+        map = null;
     }
 });
