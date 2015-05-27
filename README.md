@@ -8,4 +8,4 @@
 Version: Luna Release (4.4.0)
 Build id: 20140612-0600
 <p>WebStorm 10.0.1
-<p>3.tomcat版本:8.0
+<p>3.Tomcat:8.0

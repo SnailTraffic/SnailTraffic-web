@@ -1,6 +1,6 @@
 *.class
 
-# Webstorm setting files
+# Webstorm
 /.idea/*
 
 # Mobile Tools for Java (J2ME)
