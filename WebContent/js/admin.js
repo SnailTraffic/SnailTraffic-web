@@ -12,17 +12,17 @@ function newLineStationItem(stationName) {
 $(document).ready(function (e) {
     $('#button-upload').click(function (e) {
         uploading = true;
-        $('#upload-progress').css('margin-left', '-20%');
-        $('#upload-progress').css('width', '20%');
+        var progressBar = $('#upload-progress');
+        progress.css('margin-left', '-20%').css('width', '20%');
         var ss = function() {
-            $('#upload-progress').animate({marginLeft: '120%'}, 5000, function () {
+            progress.animate({marginLeft: '120%'}, 5000, function () {
                 if (uploading) {
                     $(this).css('margin-left', '-20%');
                     ss();
                 } else { 
                     $(this).css('margin-left', '0')
-                    $(this).css('width', '1%');
-                    $(this).animate({width: '100%'}, 2000);
+                        .css('width', '1%')
+                        .animate({width: '100%'}, 2000);
                 }
             });
         }
@@ -54,6 +54,7 @@ $(document).ready(function (e) {
     
     $('#new-linename-text').bind('input propertychange', function () {
         var icon = $('#new-line-status');
+        var input = $('#new-line-name');
         var text = $(this).val();
         if (text.length > 0) {
             ajax('search.jsp'
@@ -61,25 +62,25 @@ $(document).ready(function (e) {
                 , {'query-type': '2', 'bus-line-no': text}
                 , function (ret) {
                     icon.css('display', 'inline').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
-                    $('#new-line-name').removeClass('has-danger').removeClass('has-success');
+                    input.removeClass('has-danger').removeClass('has-success');
                     var type = parseInt(ret.type);
                     if (ret.type != -1) {
                         icon.addClass('glyphicon-remove');
-                        $('#new-line-name').addClass('has-danger');
+                        input.addClass('has-danger');
                     } else {
                         icon.addClass('glyphicon-ok');
-                        $('#new-line-name').addClass('has-success');
+                        input.addClass('has-success');
                     }
                 }
                 
                 , function (XMLHttpRequest, textStatus, errorThrown) {
                     icon.css('display', 'none').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
-                    $('#new-line-name').removeClass('has-success').removeClass('has-error');
+                    input.removeClass('has-success').removeClass('has-error');
                 }
             );
         } else {
             icon.css('display', 'none').removeClass('glyphicon-remove').removeClass('glyphicon-ok');
-            $('#new-line-name').removeClass('has-error').removeClass('has-success');
+            input.removeClass('has-error').removeClass('has-success');
         }
     });
     
