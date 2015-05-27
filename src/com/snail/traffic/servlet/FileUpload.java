@@ -12,14 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
-import org.apache.commons.io.output.*;
 
 import com.snail.traffic.control.Administration;
 
 /**
  * Servlet implementation class FileUpload
  */
-@WebServlet("/upload.jsp")
+@WebServlet({ "/upload.jsp", "admin.jsp?upload" })
 public class FileUpload extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -30,13 +29,6 @@ public class FileUpload extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Leave empty
-	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
 /**
  * Servlet implementation class LoginServlet
  */
-@WebServlet("/login.jsp")
+@WebServlet({ "/login.jsp", "/admin.jsp?login" })
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

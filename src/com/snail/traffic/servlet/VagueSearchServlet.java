@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,9 @@ import com.snail.traffic.control.QueryBus;
 /**
  * Servlet implementation class VagueSearchServlet
  */
-@WebServlet(asyncSupported = true, urlPatterns = { "/vaguesearch.jsp" })
+@WebServlet(asyncSupported = true, urlPatterns = { "/vaguesearch.jsp" }, 
+	initParams = { @WebInitParam(name = "amount", value = "100") })
+
 public class VagueSearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -28,13 +31,6 @@ public class VagueSearchServlet extends HttpServlet {
     public VagueSearchServlet() {
         super();
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Leave empty
-	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
