@@ -64,13 +64,18 @@ public class UpdateLine{
 										String[] leftSite,  //左行站点组成的数组
 										String[] rightSite){
 										
-		/*更新线路表信息*/
-		alt.updateLine(linename,newname,linterval,lfirstopen,llastopen,lfirstclose,llastclose,lprice,lcardprice,lcompany,remark);
-		
-		if(newname != null){
-			linename = newname;
+		if(newname == null || newname.equals("")){
+			return false;
 		}
+		
+		/*更新线路表信息*/
+		
+		alt.updateLine(linename,newname,linterval,lfirstopen,llastopen,lfirstclose,llastclose,lprice,lcardprice,lcompany,remark);
+		linename = newname;
+		
 		int lid = alt.getId(linename);	
+		
+		tlsSite = so.getLineSiteSeq(linename);
 		
 		/*更新站点线路表*/
 		updateSiteLine(lid,leftSite,true);
@@ -87,6 +92,117 @@ public class UpdateLine{
 	 *1.需要分析线路中增加站点,删除站点的情况
 	 *2.删除站点时需要找到删除的哪个站点,并修改站点线路表
 	 */
+	private void updateSiteLine(int lid,String[] site,boolean isLeft){
+		
+		
+		String sidseqBefore = null;     
+		String sidseqAfter = "";            //更新后站点id序列
+		
+		sidseqBefore = tlsSite.get(isLeft);                      //获取线路对应的站点序列
+		String[] sidBefore = sidseqBefore.split(",");            //获取之前线路上的所有sid组成的数组
+ 		
+		//主要处理线路中新增的站点
+		for(int i = 0 ; i < site.length ; i++){
+			
+			int sid = ast.getId(site[i]);
+			tlsLine = so.getSiteLineSeq(site[i]);
+			String lidseqBefore = tlsLine.get(isLeft);           //获取更新前站点所对应的线路组成的序列
+			String lidStr = lidseqBefore;
+			String lidLeftBefore =  tlsLine.get(true);
+			String lidRightBefore = tlsLine.get(false);
+			
+			//如果该站点对应的线路id中存在更新的线路id,则证明该站点未改变,否则该站点是新增站点,需要在该站点对应的站点
+			//线路表上增加线路信息
+			
+			//组成更新后的站点id字符串
+			if(sidseqAfter.equals("")){
+				sidseqAfter = sid + "";
+			}
+			else{
+				sidseqAfter = sidseqAfter + "," + sid;
+			}
+			
+			
+			//判断lid在字符串中的位置
+			//1.lid在开头和结尾是需要判断首个id是否和lid相等，其他位置需要判断加上前后两个逗号
+			
+			if(lidStr.startsWith(lid + ",")){
+				continue;
+			}
+			else if(lidStr.endsWith(","+lid)){
+				continue;
+			}
+			else if(lidStr.contains("," + lid + ",")){
+				continue;
+			}
+			else{
+				lidStr = lidStr + "," +lid;
+				if(isLeft){
+					aslt.updateKeyToValue(sid,lidStr,lidRightBefore);
+				}
+				else{
+					aslt.updateKeyToValue(sid,lidLeftBefore,lidStr);
+				}
+			}
+			
+			
+			
+		}
+		
+		//主要处理线路中删除的站点
+		//判断之前的站点id是否存在于新站点id序列中
+		for(int i = 0; i < sidBefore.length; i++){
+			int sid = Integer.parseInt(sidBefore[i]);
+			tlsLine = so.getSiteLineSeq(ast.getName(sid));   //得到该站点对应的线路id组成的字符串
+			
+			String lidseqBefore = tlsLine.get(isLeft);           //获取更新前站点所对应的线路组成的序列
+			String lidStr = lidseqBefore;
+			String[] temp = lidStr.split(",");
+			String lidLeftBefore =  tlsLine.get(true);
+			String lidRightBefore = tlsLine.get(false);
+			
+			//如果之前站点也在更新后站点中,则不改变,否则需要删除对应站点中的lid,需要判断lid在字符串中的位置
+			if(sidseqAfter.startsWith(sid+",")){
+				continue;
+			}
+			else if(sidseqAfter.endsWith("," + sid)){
+				continue;
+			}
+			else if( sidseqAfter.contains(","+ sid + ",")){
+				continue;
+			}
+			else{
+				//lid在线路字符串的最后位置和其他位置
+				//int a = Integer.parseInt(temp[temp.length - 1]);
+				if(lidStr.contains("," + lid + ",")){
+					lidStr = lidStr.replace("," + lid + ",",",");
+				}
+			    else if(lidStr.startsWith(lid + ",")){
+			    	
+					lidStr = lidStr.replaceFirst( lid + ",","");
+				}
+				else if(lidStr.endsWith("," + lid)){
+					String str = "," + lid;
+					int endIndex = lidStr.length() - str.length();
+					lidStr = lidStr.substring(0, endIndex);
+				}
+				
+				if(isLeft){
+					aslt.updateKeyToValue(sid,lidStr,lidRightBefore);
+				}
+				else{
+					aslt.updateKeyToValue(sid,lidLeftBefore,lidStr);
+				}
+			}
+			
+		}
+	}
+	
+	/*
+	
+	 *1.需要分析线路中增加站点,删除站点的情况
+	 *2.删除站点时需要找到删除的哪个站点,并修改站点线路表
+	 
 	private void updateSiteLine(int lid,String[] site,boolean isLeft){
 		
 		String lidseq = null;
@@ -159,7 +275,7 @@ public class UpdateLine{
 			}
 		}
 		
-	}
+	}*/
 	
 	private void updateLineSite(int lid,String[] site,boolean isLeft){
 		

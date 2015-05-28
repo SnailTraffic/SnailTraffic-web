@@ -59,6 +59,7 @@ public class AdminNextSiteTable {
 			pre_insert.setInt(6, distance);	
 			pre_insert.executeUpdate();		
 		} catch (SQLException e) {
+			//System.out.println(startsid + "," + lid + "," + isleft + "," + endsid);
 			e.printStackTrace();
 		}	
 	}

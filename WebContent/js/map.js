@@ -50,6 +50,10 @@ function drawBusStation(stationName) {
     }
 }
 
+function mapClearOverlay() {
+	map.clearOverlays();
+}
+
 var map = null; // global
 $(document).ready(function (e) {
     $('#sidebar-button-close').click(function (e) {

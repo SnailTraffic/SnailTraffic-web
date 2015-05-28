@@ -121,11 +121,11 @@ public class Administration {
 		String[] right = {"南李路徐家墩","南李路板桥","南李路李桥"};
 		addLine("1000路", "342-dd", "242", "l323", "35", "523", "532", "3sdh", "325d", "dgh",left,right );*/
 		//deleteLine("602路");
-		/*String[] a = {"建设大道双墩","江汉二路南京路","黄鹤楼"};
-		String[] b = {"黄鹤楼","江汉二路南京路","建设大道双墩"};
-		updateLine("1路","55445路","fgfgds","dgs","dfd","dfgsg","dg","gf","df","dg","df",a,b);*/
+		String[] a = {"建设大道双墩","江汉二路南京路","解放大道宗关"};
+		String[] b = {"解放大道宗关","江汉二路南京路","建设大道双墩"};
+		updateLine("1路","14512路","fgfgds","dgs","dfd","dfgsg","dg","gf","df","dg","df",a,b);
 		/*deleteSite("民意一路");*/
 		//addSite("蜗牛公交");
-		updateSite("蜗牛公交","哈哈公交");
+		//updateSite("蜗牛公交","哈哈公交");
 	}
 }

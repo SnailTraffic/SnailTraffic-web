@@ -17,7 +17,7 @@ function clearResult () {
 }
 
 function showBusExchangeResult (json) {
-    
+    alert(json.toString());
 }
 
 function showBusLineResult(json) {
