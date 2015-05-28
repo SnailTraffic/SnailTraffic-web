@@ -100,7 +100,7 @@ public class LineAllInfoStruct extends InfoStruct{
 	}
 
 	@Override
-	public JSONObject toJSON() {
+	public JSONObject toJSONObject() {
 		JSONObject ret = new JSONObject();
 		StringBuilder sBuilder = new StringBuilder();
 		

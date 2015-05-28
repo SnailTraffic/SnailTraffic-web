@@ -38,7 +38,7 @@ public class SiteInfoStruct extends InfoStruct {
 	}
 
 	@Override
-	public JSONObject toJSON() {
+	public JSONObject toJSONObject() {
 		JSONObject ret = new JSONObject();
 		
 		try {

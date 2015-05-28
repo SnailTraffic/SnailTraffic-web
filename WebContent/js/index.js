@@ -17,7 +17,7 @@ function clearResult () {
 }
 
 function showBusExchangeResult (json) {
-    // leave this blank temporarily
+    
 }
 
 function showBusLineResult(json) {
@@ -172,6 +172,7 @@ $(document).ready(function () {
     // Ajax form submit
     $('form').bind('submit', function () {
         var data = packFormDataToJson(this);
+        mapClearOverlay();
         ajaxSubmit(
             this
             , data

@@ -7,9 +7,9 @@ import net.sf.json.*;
  * @author weiliu
  *
  */
-public abstract class InfoStruct implements CovertToJson {
+public abstract class InfoStruct implements CovertToJsonObject {
 
-	public abstract JSONObject toJSON();
+	public abstract JSONObject toJSONObject();
 	
 	/**
 	 * 保存数组信息

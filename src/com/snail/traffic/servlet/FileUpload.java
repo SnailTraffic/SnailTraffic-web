@@ -18,7 +18,7 @@ import com.snail.traffic.control.Administration;
 /**
  * Servlet implementation class FileUpload
  */
-@WebServlet({ "/upload.jsp", "admin.jsp?upload" })
+@WebServlet({ "/upload.jsp", "/admin.jsp?upload" })
 public class FileUpload extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

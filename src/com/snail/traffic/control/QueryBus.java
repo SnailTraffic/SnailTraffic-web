@@ -44,39 +44,39 @@ public class QueryBus {
 	}
 	
 	// 换乘查询
-	public static Vector<TransitSchemeStruct> queryTransit(String start, String end) {
+	public static InfoStruct queryTransit(String start, String end) {
 		SelectTransit selectTran = new SelectTransit(con);
 		return selectTran.query(start, end);
 	}
 	
-	/*
-	public static void main(String[] args) {
-		 
-	        String ss = "解放";  
-	        while(ss != "q"){ //读取输入流中的字节直到流的末尾返回1  
-                //数组缓冲  
-	        	   
-                byte[] b = new byte[1024];  
+//	public static void main(String[] args) {
+//		Vector<TransitSchemeStruct> v = queryTransit("建设大道双墩", "汉黄路岱家山");
+//		
+//	        String ss = "解放";  
+//	        while(ss != "q"){ //读取输入流中的字节直到流的末尾返回1  
+//                //数组缓冲  
+//	        	   
+//                byte[] b = new byte[1024];  
+//
+//                //读取数据  
+//
+//                int n = 0;
+//				try {
+//					System.out.println("请输入：");  
+//					n = System.in.read(b);
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}  
+//
+//                //转换为字符串  
+//
+//                 ss = new String(b,0,n);  
+//                
+//	    		Vector<String> tt = fuzzySearch(ss);
+//	    		for(int i = 0; i < tt.size(); i++) 
+//	    			System.out.println(tt.get(i)); 
+//	        }
+//	}
 
-                //读取数据  
-
-                int n = 0;
-				try {
-					System.out.println("请输入：");  
-					n = System.in.read(b);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}  
-
-                //转换为字符串  
-
-                 ss = new String(b,0,n);  
-                
-	    		Vector<String> tt = fuzzySearch(ss);
-	    		for(int i = 0; i < tt.size(); i++) 
-	    			System.out.println(tt.get(i)); 
-	        }
-	}
-	*/
 }

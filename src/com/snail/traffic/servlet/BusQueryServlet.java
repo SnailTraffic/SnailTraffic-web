@@ -86,12 +86,8 @@ public class BusQueryServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected JSONObject queryBusExchange(String startStation, String destStation) throws IOException {
-		/**
-		 * 
-		 * 
-		 */
-		
-		return null;
+		InfoStruct ret = QueryBus.queryTransit(startStation, destStation);
+		return ret.toJSONObject();
 	}
 	
 	/**
@@ -101,7 +97,7 @@ public class BusQueryServlet extends HttpServlet {
 	 */
 	protected JSONObject queryBusLine(String lineName) throws IOException {
 		InfoStruct ret = QueryBus.queryBusLine(lineName);
-		return ret.toJSON();
+		return ret.toJSONObject();
 	}
 	
 	/**
@@ -111,6 +107,6 @@ public class BusQueryServlet extends HttpServlet {
 	 */
 	protected JSONObject queryBusStation(String stationName) throws IOException {
 		InfoStruct ret = QueryBus.queryBusSite(stationName);
-		return ret.toJSON();
+		return ret.toJSONObject();
 	}
 }

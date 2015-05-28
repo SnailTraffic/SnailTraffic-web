@@ -78,9 +78,9 @@ public class AdminLineSiteTable extends AdminRelationTableBase {
 	 */
 	public void updateKeyToValue(int key, String left, String right) {
 		try{
-			pre_update.setInt(1, key);
-			pre_update.setString(2, left);
-			pre_update.setString(3, right);
+			pre_update.setString(1, left);
+			pre_update.setString(2, right);
+			pre_update.setInt(3, key);
 			pre_update.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

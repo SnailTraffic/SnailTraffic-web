@@ -33,9 +33,9 @@ public class AdminLineTable extends AdminInfoTableBase {
 			String insertsql = "insert into LINEINFO values(?,?,?,?,?,?,?,?,?,?,?)";
 			String deletesql = "delete FROM LINEINFO WHERE lname = ?";
 			String getlidsql = "SELECT lid FROM　LINEINFO　WHERE lname = ?";
-			String updatesql = "update LINEINFO SET sname=?,linterval=?,lfirstopen=?"
+			String updatesql = "update LINEINFO SET lname=?,linterval=?,lfirstopen=?"
 							+ ",llastopen=?,lfirstclose=?,llastclose=?,lprice=?,lcardprice=?,lcompany=?, remark=?"
-							+ " WHERE sname = ?";
+							+ " WHERE lname = ?";
 
 			String selLineName = "SELECT lname FROM　LineInfo　 WHERE lid = ?";
 			String selLineInfo = "SELECT lname, LINTERVAL"
@@ -143,8 +143,8 @@ public class AdminLineTable extends AdminInfoTableBase {
 			pre_update.setString(7, lprice);
 			pre_update.setString(8, lcardprice);
 			pre_update.setString(9, lcompany);
-			pre_update.setString(10, linename);
-			pre_update.setString(11, remark);
+			pre_update.setString(10, remark);
+			pre_update.setString(11, linename);
 			pre_update.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
