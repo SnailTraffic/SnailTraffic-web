@@ -13,7 +13,7 @@ import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
 
-import com.snail.traffic.control.Administration;
+import com.snail.traffic.control.admin.AdministrationAPI;
 
 /**
  * Servlet implementation class FileUpload
@@ -51,7 +51,7 @@ public class FileUpload extends HttpServlet {
 			factory.setSizeThreshold(maxMemSize);
 			
 			ServletFileUpload upload = new ServletFileUpload(factory);
-			Administration admin = new Administration();
+			AdministrationAPI admin = new AdministrationAPI();
 			
 			try {
 				List<?> list = upload.parseRequest(request);

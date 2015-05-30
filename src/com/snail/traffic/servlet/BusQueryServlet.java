@@ -7,8 +7,8 @@ import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 
-import com.snail.traffic.control.*;
-import com.snail.traffic.persistence.*;
+import com.snail.traffic.container.info.InfoStruct;
+import com.snail.traffic.control.query.QueryBusAPI;
 
 import net.sf.json.*;
 
@@ -86,7 +86,7 @@ public class BusQueryServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected JSONObject queryBusExchange(String startStation, String destStation) throws IOException {
-		InfoStruct ret = QueryBus.queryTransit(startStation, destStation);
+		InfoStruct ret = QueryBusAPI.queryTransfer(startStation, destStation);
 		return ret.toJSONObject();
 	}
 	
@@ -96,7 +96,7 @@ public class BusQueryServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected JSONObject queryBusLine(String lineName) throws IOException {
-		InfoStruct ret = QueryBus.queryBusLine(lineName);
+		InfoStruct ret = QueryBusAPI.queryBusLine(lineName);
 		return ret.toJSONObject();
 	}
 	
@@ -106,7 +106,7 @@ public class BusQueryServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected JSONObject queryBusStation(String stationName) throws IOException {
-		InfoStruct ret = QueryBus.queryBusSite(stationName);
+		InfoStruct ret = QueryBusAPI.queryBusSite(stationName);
 		return ret.toJSONObject();
 	}
 }

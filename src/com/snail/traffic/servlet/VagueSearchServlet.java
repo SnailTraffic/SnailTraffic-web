@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.snail.traffic.control.QueryBus;
+import com.snail.traffic.control.query.QueryBusAPI;
 
 /**
  * Servlet implementation class VagueSearchServlet
@@ -43,7 +43,7 @@ public class VagueSearchServlet extends HttpServlet {
 		} catch (Exception e) {
 			amount = 100;
 		}
-		Vector<String> v = QueryBus.fuzzySearch(pattern);
+		Vector<String> v = QueryBusAPI.fuzzySearch(pattern);
 		
 		JSONObject responseJSONObject = new JSONObject();
 		JSONArray arr = new JSONArray();
