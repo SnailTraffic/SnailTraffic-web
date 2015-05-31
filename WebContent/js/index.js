@@ -17,7 +17,19 @@ function clearResult () {
 }
 
 function showBusExchangeResult (json) {
-    alert(json.toString());
+    $('#search-reault-title').html('');
+    $('#search-result-desc').html('');
+
+    var $template_root = $('#bus-exchange-scheme-template');
+    var $template_item_root = $('#bus-exchange-scheme-part-template');
+
+    $('.list-left-wrap').css('width', '100%');
+    $('.list-right-wrap').css('display', 'none');
+
+    var list = $('.list-left-wrap ul');
+    var schemeStr = ''
+    var itemStr = '';
+
 }
 
 function showBusLineResult(json) {
@@ -107,7 +119,7 @@ function collapseTextHint() {
     $('#text-hint').css('visibility', 'collapse');
 }
 
-$(document).ready(function () {
+$(function () {
     // Tab change
     $('#tab-group1 a').click(function (e) {
         e.preventDefault();
@@ -183,7 +195,7 @@ $(document).ready(function () {
                 case 1: // Exchange
                     setSidebarVisibility(true);
                     openSidebar();
-                    showBusExchangeResult(ret);
+                    showBusExchangeResult(ret.schemes);
                     break;
                 case 2: // Line
                     setSidebarVisibility(true);
@@ -219,5 +231,9 @@ $(document).ready(function () {
         );
 
         return false;
+    });
+
+    $('.line-exchange-scheme-title').click(function (e) {
+        $(this).next('.line-exchange-scheme-body').toggle();
     });
 });

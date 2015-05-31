@@ -96,7 +96,6 @@ $(function () {
     // Line edit thingy...
 
     // Find if bus line is in database
-    var loadData = null;
     $ledit_lineName.bind('input propertychange', function () {
         var text = $ledit_lineName.val();
         if (text.length > 0) {
@@ -105,13 +104,7 @@ $(function () {
                 , {'query-type': '2', 'bus-line-no': text}
                 , function (ret) {
                     var type = parseInt(ret.type);
-                    if (type == -1) {
-                        loadData = null;
-                        feedbackLineNameStatus(true);
-                    } else {
-                        loadData = ret;
-                        feedbackLineNameStatus(false);
-                    }
+                    feedbackLineNameStatus(type == -1);
                 }
                 , function (XMLHttpRequest, textStatus, errorThrown) {
                     feedbackLineNameStatus(null);
@@ -123,9 +116,9 @@ $(function () {
     });
 
     $ledit_loadButton.click(function (e) {
+        // ajax thing...
         $ledit_lineNameLoaded.text($ledit_lineName.val());
         $ledit_lineNewNameWrap.css('display', 'inherit');
-        unpackLineData(loadData);
     });
 
     $ledit_lineAltToggle.change(function (e) {
@@ -202,13 +195,7 @@ $(function () {
     });
 
     $ledit_panelToggle.change(function (e) {
-        var checked = $(this).is(':checked');
-        var $panelBody = $(this).parents('.panel-heading').next('.panel-body');
-        if (checked) {
-            $panelBody.css('display', 'block');
-        } else {
-            $panelBody.css('display', 'none');
-        }
+        $(this).parents('.panel-heading').next('.panel-body').toggle();
     });
 
     $ledit_submitButtons.click(function (e) {
@@ -236,7 +223,7 @@ function packLineDataAndSend(mode) {
             r = $li.find('.line-stop-right').is(':checked');
             if (!l && !r) {
                 $li.addClass('has-error');
-                flag = true;
+                __flag = true;
                 break;
             } else {
                 $li.removeClass('has-error');
@@ -258,7 +245,7 @@ function packLineDataAndSend(mode) {
             return false;
         } else if (__flag) {
             var stillSubmit = confirm('列表中部分站点既未选择[左行停靠]选项，也未选择[右行停靠]选项。' +
-                '\n这虽然不影响本次提交的过程，但是在提交的数据中，这些站点将会被忽略。' +
+                '\n这虽然不影响本次提交的过程，但这些站点将会被忽略。' +
                 '\n是否仍然要提交？');
 
             if (!stillSubmit) { return false; }
@@ -270,11 +257,7 @@ function packLineDataAndSend(mode) {
         msg = '新增';
 
         if (mode == 0) {
-            if ($ledit_lineAltToggle.is(':checked')) {
-                data['title-new'] = $ledit_lineNewName.val();
-            } else {
-                data['title-new'] = $ledit_lineName.val();
-            }
+            data['title-new'] = $ledit_lineNewName.val();
             msg = '修改';
         }
     } else {
@@ -299,13 +282,6 @@ function packLineDataAndSend(mode) {
     );
 }
 
-function unpackLineData(json) {
-    if (json) {
-        $ledit_lineNameLoaded.val(json.title);
+function unpackLineData() {
 
-        for (var i = 0; i < json.stations.length; i++) {
-            var station = json.stations[i];
-            newLineStationItem(station.title, station.left, station.right);
-        }
-    }
 }

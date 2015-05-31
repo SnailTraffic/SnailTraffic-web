@@ -9,7 +9,9 @@ import net.sf.json.JSONObject;
 
 public class InfoTransferStruct extends InfoStruct {
 	public Vector<TransitScheme> schemes;
-	
+	public String start = null;
+	public String end = null;
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject o = new JSONObject();
@@ -18,10 +20,13 @@ public class InfoTransferStruct extends InfoStruct {
 			for (int i = 0; i < schemes.size(); i++) {
 				a.add(schemes.get(i).toJSONObject());
 			}
-			
+
+			o.put("start", start);
+			o.put("end", end);
 			o.put("schemes", a);
 		} catch (Exception e) {
 			e.printStackTrace();
+			o = null;
 		}
 		
 		return o;
