@@ -1,11 +1,11 @@
 create or replace PROCEDURE INITIALIZATE_GROUP7DB AS 
--- åˆå§‹åŒ–æ•°æ®åº“
-tem smallint;   --ä¸´æ—¶å˜é‡
+-- ³õÊ¼»¯Êı¾İ¿â
+tem smallint;   --ÁÙÊ±±äÁ¿
 
 BEGIN
-  --åˆ é™¤è¡¨------------------------------
+  --É¾³ı±í------------------------------
   
-  -- åˆ¤æ–­åˆ é™¤ä¸‹ä¸€ç«™è¡¨*************************************
+  -- ÅĞ¶ÏÉ¾³ıÏÂÒ»Õ¾±í*************************************
   SELECT COUNT(1) INTO tem FROM ALL_TABLES WHERE TABLE_NAME = 'NEXTSITE';
   IF tem = 1 THEN
     EXECUTE IMMEDIATE'
@@ -20,27 +20,27 @@ BEGIN
       DROP TABLE NEXTSITE';
   END IF;
   
-  --åˆ¤æ–­ç«™ç‚¹åˆ°çº¿è·¯ä¿¡æ¯
+  --ÅĞ¶ÏÕ¾µãµ½ÏßÂ·ĞÅÏ¢
   SELECT COUNT(1) INTO tem FROM ALL_TABLES WHERE TABLE_NAME = 'SITETOLINE';
   IF tem = 1 THEN
-  --åˆ é™¤çº¦æŸ
+  --É¾³ıÔ¼Êø
     EXECUTE IMMEDIATE'
     alter table SITETOLINE drop constraint FK_SID cascade';
     EXECUTE IMMEDIATE'
     DROP TABLE SITETOLINE';
   END IF;
   
-  --åˆ¤æ–­çº¿è·¯åˆ°ç«™ç‚¹ä¿¡æ¯
+  --ÅĞ¶ÏÏßÂ·µ½Õ¾µãĞÅÏ¢
   SELECT COUNT(1) INTO tem FROM ALL_TABLES WHERE TABLE_NAME = 'LINETOSITE';
   IF tem = 1 THEN
-  --åˆ é™¤çº¦æŸ
+  --É¾³ıÔ¼Êø
     EXECUTE IMMEDIATE'
     alter table LINETOSITE drop constraint FK_LID cascade';
     EXECUTE IMMEDIATE'
     DROP TABLE LINETOSITE';
   END IF;
   
-  -- åˆ¤æ–­åˆ é™¤ç«™ç‚¹ä¿¡æ¯è¡¨
+  -- ÅĞ¶ÏÉ¾³ıÕ¾µãĞÅÏ¢±í
   SELECT COUNT(1) INTO tem FROM ALL_TABLES WHERE TABLE_NAME = 'SITEINFO';
   IF tem = 1 THEN
    EXECUTE IMMEDIATE'
@@ -49,7 +49,7 @@ BEGIN
     DROP TABLE SITEINFO';
   END IF;
   
-  -- åˆ¤æ–­åˆ é™¤çº¿è·¯ä¿¡æ¯è¡¨
+  -- ÅĞ¶ÏÉ¾³ıÏßÂ·ĞÅÏ¢±í
   SELECT COUNT(1) INTO tem FROM ALL_TABLES WHERE TABLE_NAME = 'LINEINFO';
   IF tem = 1 THEN
     EXECUTE IMMEDIATE'
@@ -58,12 +58,15 @@ BEGIN
     DROP TABLE LINEINFO';
   END IF;
 
-  -- åˆ¤æ–­åˆ é™¤ä¸´æ—¶è¡¨
+  -- ÅĞ¶ÏÉ¾³ıÁÙÊ±±í
   EXECUTE IMMEDIATE'
     DROP TABLE Temp_DIRECTACCESS';
+    -- ÅĞ¶ÏÉ¾³ıÁÙÊ±±í
+  EXECUTE IMMEDIATE'
+    DROP TABLE TEMP_ROUTE';  
   --------------------------------------------------
-  --åˆ›å»ºè¡¨
-  --ç«™ç‚¹ä¿¡æ¯è¡¨ï¼šç«™ç‚¹idã€ç«™ç‚¹åã€ç«™ç‚¹åœ°å€ã€ç«™ç‚¹é™„è¿‘æ ‡å¿—å»ºç­‘1ã€ç«™ç‚¹é™„è¿‘æ ‡å¿—å»ºç­‘2
+  --´´½¨±í
+  --Õ¾µãĞÅÏ¢±í£ºÕ¾µãid¡¢Õ¾µãÃû¡¢Õ¾µãµØÖ·¡¢Õ¾µã¸½½ü±êÖ¾½¨Öş1¡¢Õ¾µã¸½½ü±êÖ¾½¨Öş2
   EXECUTE IMMEDIATE'
   CREATE TABLE SITEINFO
   (
@@ -75,7 +78,7 @@ BEGIN
     CONSTRAINT PK_SID PRIMARY KEY (Sid)
   )';
   
-  --çº¿è·¯ä¿¡æ¯è¡¨ï¼šçº¿è·¯idã€çº¿è·¯åã€çº¿è·¯åŒºé—´ã€é¦–ç«™å¼€ç­ã€æœ«ç«™å¼€ç­ã€é¦–ç«™æ”¶ç­ã€æœ«ç«™æ”¶ç­ã€ç¥¨ä»·ã€åˆ·å¡ã€å…¬å¸
+  --ÏßÂ·ĞÅÏ¢±í£ºÏßÂ·id¡¢ÏßÂ·Ãû¡¢ÏßÂ·Çø¼ä¡¢Ê×Õ¾¿ª°à¡¢Ä©Õ¾¿ª°à¡¢Ê×Õ¾ÊÕ°à¡¢Ä©Õ¾ÊÕ°à¡¢Æ±¼Û¡¢Ë¢¿¨¡¢¹«Ë¾
    EXECUTE IMMEDIATE'
   CREATE TABLE LINEINFO
   (
@@ -93,7 +96,7 @@ BEGIN
     CONSTRAINT PK_LID PRIMARY KEY (Lid)
   )';
   
-  --çº¿è·¯ç«™ç‚¹è¡¨ï¼šçº¿è·¯idã€ç«™ç‚¹idåºåˆ—
+  --ÏßÂ·Õ¾µã±í£ºÏßÂ·id¡¢Õ¾µãidĞòÁĞ
    EXECUTE IMMEDIATE'
   CREATE TABLE LINETOSITE
   (
@@ -104,7 +107,7 @@ BEGIN
     ON DELETE CASCADE
   )';
   
-  --ç«™ç‚¹çº¿è·¯è¡¨ï¼šç«™ç‚¹idã€çº¿è·¯idåºåˆ—
+  --Õ¾µãÏßÂ·±í£ºÕ¾µãid¡¢ÏßÂ·idĞòÁĞ
    EXECUTE IMMEDIATE'
   CREATE TABLE SITETOLINE
   (
@@ -115,7 +118,7 @@ BEGIN
     ON DELETE CASCADE
   )';
 
-  --ç«™ç‚¹çº¿è·¯è§†å›¾ï¼šç«™ç‚¹åã€çº¿è·¯idåºåˆ—
+  --Õ¾µãÏßÂ·ÊÓÍ¼£ºÕ¾µãÃû¡¢ÏßÂ·idĞòÁĞ
   EXECUTE IMMEDIATE'
   CREATE OR REPLACE VIEW View_SiteLine(sname, llidseq, rlidseq) AS 
     SELECT SITEINFO.sname, SITETOLINE.llidseq, SITETOLINE.rlidseq
@@ -123,7 +126,7 @@ BEGIN
     WHERE SITEINFO.sid = SITETOLINE.sid
   ';
   
-  --çº¿è·¯ç«™ç‚¹è§†å›¾ï¼šçº¿è·¯åã€ç«™ç‚¹idåºåˆ—
+  --ÏßÂ·Õ¾µãÊÓÍ¼£ºÏßÂ·Ãû¡¢Õ¾µãidĞòÁĞ
   EXECUTE IMMEDIATE'
   CREATE OR REPLACE VIEW View_LineSite(lname, lsidseq, rsidseq) AS 
     SELECT LINEINFO.lname, LINETOSITE.lsidseq, LINETOSITE.rsidseq
@@ -131,7 +134,7 @@ BEGIN
     WHERE LINEINFO.lid = LINETOSITE.lid
   ';
    
-  --ä¸‹ä¸€ç«™ç‚¹è¡¨ï¼šç«™ç‚¹id, çº¿è·¯id, ä¸‹ä¸€ç«™id, æ—¶é—´ï¼Œè·ç¦»
+  --ÏÂÒ»Õ¾µã±í£ºÕ¾µãid, ÏßÂ·id, ÏÂÒ»Õ¾id, Ê±¼ä£¬¾àÀë
   EXECUTE IMMEDIATE'
   CREATE TABLE NEXTSITE
   (
@@ -151,7 +154,7 @@ BEGIN
     CONSTRAINT PK_UNINO_KEY PRIMARY KEY (StartSid, Lid, IsLeft, EndSid)
   )';
   
-  --ä¸‹ä¸€ç«™ç‚¹è§†å›¾ï¼šç«™ç‚¹åï¼Œçº¿è·¯åï¼Œä¸‹ä¸€ä¸ªç«™ç‚¹åï¼Œæ—¶é—´ï¼Œè·ç¦»
+  --ÏÂÒ»Õ¾µãÊÓÍ¼£ºÕ¾µãÃû£¬ÏßÂ·Ãû£¬ÏÂÒ»¸öÕ¾µãÃû£¬Ê±¼ä£¬¾àÀë
   EXECUTE IMMEDIATE'
   CREATE OR REPLACE VIEW View_NextSite(StartSname, Lname,IsLeft, EndSname, RunTime, Distance) AS 
     SELECT s1.Sname, LINEINFO.lname, NEXTSITE.IsLeft, s2.Sname, NEXTSITE.RunTime, NEXTSITE.Distance
@@ -161,29 +164,30 @@ BEGIN
       AND NEXTSITE.ENDSid = s2.Sid 
     WITH READ ONLY
   ';
-  -- åˆ›å»ºä¸´æ—¶è¡¨
+  -- ´´½¨ÁÙÊ±±í
   EXECUTE IMMEDIATE'
   CREATE  GLOBAL  TEMPORARY  TABLE  Temp_DIRECTACCESS  (  
                       sname Varchar(32),
                       lname Varchar(8),
                       runLeft NUMBER(38),
                       runTime  NUMBER(38),
-                      distance NUMBER(38))On Commit Preserve Rows';
-  -- åˆ›å»ºè·¯å¾„ä¸´æ—¶è¡¨
+                      distance NUMBER(38))On Commit Preserve Rows
+  ';
+  -- ´´½¨Â·¾¶ÁÙÊ±±í
   EXECUTE IMMEDIATE'
   CREATE GLOBAL TEMPORARY TABLE TEMP_ROUTE (
     SNAME VARCHAR2(64)
    ) On Commit Preserve Rows';
 
-  -- åˆ›å»ºè‡ªå®šä¹‰ç±»
+  -- ´´½¨×Ô¶¨ÒåÀà
   EXECUTE IMMEDIATE'
     create or replace type varTableType as table of NUMBER
   ';
   
-  -- åˆ›å»ºç¨‹åºåŒ…
+  -- ´´½¨³ÌĞò°ü
   EXECUTE IMMEDIATE'
     create or replace PACKAGE PACKAGE AS 
-    -- è‡ªå®šä¹‰è®°å½•ç±»å‹
+    -- ×Ô¶¨Òå¼ÇÂ¼ÀàĞÍ
     Type RecType Is Record
     (
       sname Varchar(32),
@@ -192,29 +196,29 @@ BEGIN
       runTime  NUMBER(38),
       distance NUMBER(38)
     );
-    -- è‡ªå®šä¹‰è¡¨ç±»å‹
+    -- ×Ô¶¨Òå±íÀàĞÍ
     Type TabType Is Table Of  RecType  Index By Binary_Integer;
   END PACKAGE;
   ';
   
   
-  --=============================================================å‡½æ•°
-  -- åˆ›å»ºå­—ç¬¦ä¸²åˆ†å‰²å‡½æ•°
+  --=============================================================º¯Êı
+  -- ´´½¨×Ö·û´®·Ö¸îº¯Êı
   EXECUTE IMMEDIATE'
     create or replace function str2numList
     (
       p_string in varchar2 
     ) RETURN varTableType AS
-    -- å­—ç¬¦ä¸²è½¬æ¢æ•°å­—æ•°ç»„å‡½æ•°
+    -- ×Ö·û´®×ª»»Êı×ÖÊı×éº¯Êı
     v_str long default p_string || '','';
-    v_n number;-- æ•°é‡
-    v_data varTableType := varTableType();  --è‡ªå®šä¹‰ç±»å‹
+    v_n number;-- ÊıÁ¿
+    v_data varTableType := varTableType();  --×Ô¶¨ÒåÀàĞÍ
     BEGIN
       LOOP
         v_n := to_number(instr( v_str, '','' ));
         exit when (nvl(v_n,0) = 0);
         v_data.extend;
-        SELECT to_number(ltrim(rtrim(substr(v_str,1,v_n-1)))) INTOã€€v_data( v_data.count )ã€€
+        SELECT to_number(ltrim(rtrim(substr(v_str,1,v_n-1)))) INTO¡¡v_data( v_data.count )¡¡
           FROM DUAL;
         --v_data( v_data.count ) := ltrim(rtrim(substr(v_str,1,v_n-1)));
         v_str := substr( v_str, v_n+1 );
@@ -222,45 +226,45 @@ BEGIN
     RETURN v_data;
   END;
   ';
-  --=========================================================å­˜å‚¨è¿‡ç¨‹
-  -- åˆ›å»ºåˆ é™¤çº¿è·¯å¯¹ä¸‹ä¸€ç«™ç‚¹è¡¨å­˜å‚¨è¿‡ç¨‹
+  --=========================================================´æ´¢¹ı³Ì
+  -- ´´½¨É¾³ıÏßÂ·¶ÔÏÂÒ»Õ¾µã±í´æ´¢¹ı³Ì
    EXECUTE IMMEDIATE'
     create or replace PROCEDURE DELETE_NEXTSITE_LINE 
     (
       LINENAME IN VARCHAR2 
     ) AS 
-    --é€šè¿‡çº¿è·¯ååˆ é™¤å…³ç³»
+    --Í¨¹ıÏßÂ·ÃûÉ¾³ı¹ØÏµ
     lineid NUMBER;
     BEGIN
-      --æ‰¾åˆ°ç«™ç‚¹å¯¹åº”çš„id
+      --ÕÒµ½Õ¾µã¶ÔÓ¦µÄid
       SELECT Lid INTO lineid 
         FROM LINEINFO 
         WHERE Lname = LINENAME;
     
-      --åˆ é™¤èµ·å§‹ç«™ç‚¹idæˆ–ç»ˆæ­¢ç«™ç‚¹idä¸ºsiteidçš„ç«™ç‚¹
+      --É¾³ıÆğÊ¼Õ¾µãid»òÖÕÖ¹Õ¾µãidÎªsiteidµÄÕ¾µã
       DELETE FROM NEXTSITE
         WHERE Lid = lineid;
 END DELETE_NEXTSITE_LINE;
 ';
   
-  -- åˆ›å»ºåˆ é™¤ç«™ç‚¹å¯¹ä¸‹ä¸€ç«™ç‚¹è¡¨
+  -- ´´½¨É¾³ıÕ¾µã¶ÔÏÂÒ»Õ¾µã±í
    EXECUTE IMMEDIATE'
     create or replace PROCEDURE DELETE_NEXTSITE_SITE 
     (
       SITENAME IN VARCHAR2 
     ) AS 
-    --æ ¹æ®ç«™ç‚¹åï¼Œåˆ é™¤NEXTSITEè¡¨ä¸­æ‰€æœ‰åŒ…å«æ¬¡ç«™ç‚¹åçš„å…³ç³»
+    --¸ù¾İÕ¾µãÃû£¬É¾³ıNEXTSITE±íÖĞËùÓĞ°üº¬´ÎÕ¾µãÃûµÄ¹ØÏµ
 
-    siteid NUMBER; --ç«™ç‚¹åå¯¹åº”çš„ç«™ç‚¹id
+    siteid NUMBER; --Õ¾µãÃû¶ÔÓ¦µÄÕ¾µãid
     BEGIN
-      --æ‰¾åˆ°ç«™ç‚¹å¯¹åº”çš„id
+      --ÕÒµ½Õ¾µã¶ÔÓ¦µÄid
       SELECT Sid INTO siteid 
         FROM SITEINFO 
         WHERE Sname = SITENAME;
         
-      --åˆ é™¤èµ·å§‹ç«™ç‚¹idæˆ–ç»ˆæ­¢ç«™ç‚¹idä¸ºsiteidçš„ç«™ç‚¹
+      --É¾³ıÆğÊ¼Õ¾µãid»òÖÕÖ¹Õ¾µãidÎªsiteidµÄÕ¾µã
       DELETE FROM NEXTSITE
-        WHERE (startsid = siteid ORã€€endsid = siteid);
+        WHERE (startsid = siteid OR¡¡endsid = siteid);
     END DELETE_NEXTSITE_SITE;
    ';
   
@@ -273,14 +277,14 @@ END DELETE_NEXTSITE_LINE;
     , runleft in Number
     , sp_coesor out sys_refcursor
     ) AS 
-    -- æ ¹æ®èµ·å§‹ç«™ç‚¹ï¼Œç»ˆæ­¢ç«™ç‚¹ï¼Œçº¿è·¯åï¼Œæ˜¯å¦å·¦è¡Œ->è·å¾—çº¿è·¯è·¯å¾„
-    -- æ³¨æ„ï¼šéœ€è¦æˆªæ–­ä¸´æ—¶è¡¨
+    -- ¸ù¾İÆğÊ¼Õ¾µã£¬ÖÕÖ¹Õ¾µã£¬ÏßÂ·Ãû£¬ÊÇ·ñ×óĞĞ->»ñµÃÏßÂ·Â·¾¶
+    -- ×¢Òâ£ºĞèÒª½Ø¶ÏÁÙÊ±±í
 
-    interMediary Varchar(64);-- ä¸­é—´ç«™ç‚¹å
+    interMediary Varchar(64);-- ÖĞ¼äÕ¾µãÃû
     insertStr Varchar(128);
 
     BEGIN
-      interMediary := '';
+      interMediary := '''';
       insertStr := ''insert into Temp_Route values('''' || STARTSITE || '''')'';
       execute immediate insertStr; 
       intermediary := startSite;
@@ -288,7 +292,7 @@ END DELETE_NEXTSITE_LINE;
       While intermediary != endSite 
         LOOP
           DBMS_OUTPUT.PUT_LINE(endSite);
-          -- è·å¾—ä¸­é—´ç«™ç‚¹å
+          -- »ñµÃÖĞ¼äÕ¾µãÃû
           Select ENDSNAME Into interMediary
             From View_NEXTSITE
             Where STARTSNAME = intermediary
@@ -296,13 +300,13 @@ END DELETE_NEXTSITE_LINE;
               AND isleft = runleft;
           
           --DBMS_OUTPUT.PUT_LINE(interMediary);
-          insertStr := ''''insert into Temp_Route values('''' || interMediary || '''')'';
+          insertStr := ''insert into Temp_Route values('''' || interMediary || '''')'';
           execute immediate insertStr; 
         END LOOP;
       Open sp_coesor FOR 
         SELECT * FROM TEMP_Route;
+      execute immediate ''delete from TEMP_Route''; 
     END ROUTE;
 ';
-  
-  
+
 END INITIALIZATE_GROUP7DB;

@@ -102,7 +102,7 @@ public class SelectTransfer {
 	 * @param allSchemes
 	 * @return
 	 */
-	public Vector<TransitScheme> getPriorityRoute(TotalTimePriorityQueue allSchemes) {
+	private Vector<TransitScheme> getPriorityRoute(TotalTimePriorityQueue allSchemes) {
 		Vector<TransitScheme> v = new Vector<>();
 		SelectRouteProcedure selRoute = new SelectRouteProcedure(this.con);
 		TransitScheme scheme = null;

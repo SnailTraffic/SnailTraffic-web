@@ -7,7 +7,8 @@ import com.snail.traffic.persistence.admin.AdminLineTable;
 import com.snail.traffic.persistence.admin.AdminNextSiteTable;
 import com.snail.traffic.persistence.admin.AdminSiteToLineTable;
 import com.snail.traffic.persistence.admin.AdminSiteTable;
-import com.snail.traffic.persistence.select.SelectOperated;
+import com.snail.traffic.persistence.select.SelectLineToSiteView;
+import com.snail.traffic.persistence.select.SelectSiteToLineView;
 import com.snail.traffic.container.data.TwoStringStruct;
 
 /*
@@ -22,7 +23,9 @@ public class DeleteSite{
 	private AdminSiteToLineTable aslt;
 	private AdminSiteTable ast;
 	private AdminLineToSiteTable alst;//线路站点表对象
-	private SelectOperated so;
+	//private SelectOperated so;
+	private SelectLineToSiteView siteView;
+	private SelectSiteToLineView lineView;
 	private AdminNextSiteTable anst;
 	private TwoStringStruct tlsLine,tlsSite;
 	private DeleteSite ds;
@@ -33,7 +36,9 @@ public class DeleteSite{
 	    aslt = new AdminSiteToLineTable(con);   //站点线路表对象
 	    ast = new AdminSiteTable(con);            //站点表对象
 	    alst = new AdminLineToSiteTable(con);   //线路站点表对象
-	    so = new SelectOperated(con);
+	   // so = new SelectOperated(con);
+	    siteView = new SelectLineToSiteView(con);
+	    lineView = new SelectSiteToLineView(con);
 	    tlsLine = new TwoStringStruct();
 	    tlsSite = new TwoStringStruct();
 	}
@@ -57,8 +62,8 @@ public class DeleteSite{
 	}
 	
 	private void editLineSite(String sitename,boolean isLeft){
-		tlsLine = so.getSiteLineSeq(sitename);  //根据站点名获取两边线路序列
-			
+		//tlsLine = so.getSiteLineSeq(sitename);  //根据站点名获取两边线路序列
+		tlsLine = lineView.getSeq(sitename);	
 		String lineSeq = tlsLine.get(isLeft);   
 		String[] lidseq = lineSeq.split(",");
 		int sid = ast.getId(sitename);
@@ -66,7 +71,8 @@ public class DeleteSite{
 		for(int i = 0 ; i < lidseq.length; i++){
 			int lid = Integer.parseInt(lidseq[i]);
 			String linename = alt.getName(lid);    //获取相应线路id对应的线路名
-			tlsSite = so.getLineSiteSeq(linename); //根据线路名获取两边站点序列
+			//tlsSite = so.getLineSiteSeq(linename); //根据线路名获取两边站点序列
+			tlsSite = siteView.getSeq(linename);
 			String siteSeq = tlsSite.get(isLeft);  //siteSeq是站点组成的字符串
 			String leftSiteSeq = tlsSite.get(true);
 			String rightSiteSeq = tlsSite.get(false);

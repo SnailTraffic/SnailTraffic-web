@@ -39,7 +39,7 @@ public class SelectBeDirectAccessProcedure extends SelectAccessProcedure {
     /**
      * get all of Access Sites
      *
-     * @param name
+     * @param endSite
      * @return
      */
     @Override

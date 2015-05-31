@@ -2,13 +2,14 @@ package com.snail.traffic.control.admin;
 
 import java.sql.Connection;
 
-import com.snail.traffic.persistence.admin.AdminLineToSiteTable;
-import com.snail.traffic.persistence.admin.AdminLineTable;
-import com.snail.traffic.persistence.admin.AdminNextSiteTable;
-import com.snail.traffic.persistence.admin.AdminSiteToLineTable;
-import com.snail.traffic.persistence.admin.AdminSiteTable;
-import com.snail.traffic.persistence.select.SelectOperated;
 import com.snail.traffic.container.data.TwoStringStruct;
+import com.snail.traffic.persistence.admin.AdminLineTable;
+import com.snail.traffic.persistence.admin.AdminLineToSiteTable;
+import com.snail.traffic.persistence.admin.AdminNextSiteTable;
+import com.snail.traffic.persistence.admin.AdminSiteTable;
+import com.snail.traffic.persistence.admin.AdminSiteToLineTable;
+import com.snail.traffic.persistence.select.SelectLineToSiteView;
+import com.snail.traffic.persistence.select.SelectSiteToLineView;
 
 /*
  *1.从前端读入需要删除的线路名
@@ -27,7 +28,9 @@ public class DeleteLine{
 	private AdminSiteToLineTable aslt;
 	private AdminSiteTable ast;
 	private AdminLineToSiteTable alst;//线路站点表对象
-	private SelectOperated so;
+	//private SelectOperated so;
+	private SelectLineToSiteView siteView;
+	private SelectSiteToLineView lineView;
 	private AdminNextSiteTable anst;
 	private TwoStringStruct tls;
 	
@@ -38,7 +41,9 @@ public class DeleteLine{
 	    aslt = new AdminSiteToLineTable(con);   //站点线路表对象
 	    ast = new AdminSiteTable(con);            //站点表对象
 	    alst = new AdminLineToSiteTable(con);   //线路站点表对象
-	    so = new SelectOperated(con);
+	   // so = new SelectOperated(con);
+	    siteView = new SelectLineToSiteView(con);
+	    lineView = new SelectSiteToLineView(con);
 	    tls = new TwoStringStruct();
 	   
 	}
@@ -61,7 +66,7 @@ public class DeleteLine{
 			alt.delete(lineName);
 			
 			/*删除对应的线路站点表信息*/
-			alst.deleteKey(lid);
+			alst.delete(lid);
 			
 			/*前端显示该条线路已被删除*/
 			return true;
@@ -71,7 +76,8 @@ public class DeleteLine{
 	/*修改获取的站点对应的站点线路表*/
 	private void  editSiteLineTable(String lineName){
 		int lid = alt.getId(lineName);
-		tls = so.getLineSiteSeq(lineName);
+		//tls = .getLineSiteSeq(lineName);
+		tls = siteView.getSeq(lineName);
 		String leftStr = tls.get(true);
 		String rightStr = tls.get(false);
 		
@@ -88,7 +94,8 @@ public class DeleteLine{
 			int sid = Integer.parseInt(site[i]);      //得到站点的sid
 			String siteName = ast.getName(sid);
 			
-			tls = so.getSiteLineSeq(siteName);
+			//tls = so.getSiteLineSeq(siteName);
+			tls = lineView.getSeq(siteName);
 			String lineStr = tls.get(isLeft);
 			String leftStr =  tls.get(true);
 			String rightStr = tls.get(false);

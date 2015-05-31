@@ -175,17 +175,17 @@ public class ReadNormalBus extends ReadSheetBase {
 			siteline = new SiteToLineStruct();
 			
 			if (isleft)
-				siteline.setALlid(lidvalue);	// 左行线路集合增加一条新线路
+				siteline.setLeftLid(lidvalue);	// 左行线路集合增加一条新线路
 			else
-				siteline.setARlid(lidvalue);	// 右行线路集合增加一条新线路
+				siteline.setRightLid(lidvalue);	// 右行线路集合增加一条新线路
 				
 			lidSeqMap.put(sidvalue, siteline);	// 重新放入map中
 		}
 		else {
 			if (isleft)	
-				siteline.setALlid(lidvalue);	// 左行线路集合增加一条新线路
+				siteline.setLeftLid(lidvalue);	// 左行线路集合增加一条新线路
 			else
-				siteline.setARlid(lidvalue);	// 右行线路集合增加一条新线路
+				siteline.setRightLid(lidvalue);	// 右行线路集合增加一条新线路
 			
 			lidSeqMap.put(sidvalue, siteline);	// 重新放入map中
 		}

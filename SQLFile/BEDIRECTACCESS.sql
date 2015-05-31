@@ -1,89 +1,88 @@
 create or replace PROCEDURE BEDIRECTACCESS 
 (
   ENDSITE IN VARCHAR2 
-,  len IN Number
 , sp_coesor out sys_refcursor
 ) AS 
-  -- ÈÄöËøáËæìÂÖ•Á´ôÁÇπÂêçÂæóÂà∞ÊâÄÊúâÁªèËøáËØ•Á´ôÁÇπËÉΩÁõ¥ËææÁöÑÁ´ôÁÇπÂêç
-  -- ÂèòÈáè
-  siteId NUMBER(16);-- ËæìÂÖ•Á´ôÁÇπid
-  leftStr VARCHAR2(256);-- Â∑¶Â≠óÁ¨¶‰∏≤
-  rightStr VARCHAR2(256);-- Âè≥Â≠óÁ¨¶‰∏≤
-  left_numList varTableType;-- Â∑¶ËæπÁöÑÁ∫øË∑ØidÊï∞ÁªÑ
-  right_numList varTableType;-- Âè≥ËæπÁöÑÁ∫øË∑ØidÊï∞ÁªÑ
-  left_site_numList varTableType;-- Â∑¶Ë°åÁ´ôÁÇπidÊï∞ÁªÑ
-  right_site_numList varTableType;-- Âè≥Ë°åÁ´ôÁÇπidÊï∞ÁªÑ
-  visit_numList varTableType := varTableType();-- Â∑≤ËÆøÈóÆÁ∫øË∑Øid
+  -- Õ®π˝ ‰»Î’æµ„√˚µ√µΩÀ˘”–æ≠π˝∏√’æµ„ƒ‹÷±¥Ôµƒ’æµ„√˚
+  -- ±‰¡ø
+  siteId NUMBER(16);--  ‰»Î’æµ„id
+  leftStr VARCHAR2(256);-- ◊Û◊÷∑˚¥Æ
+  rightStr VARCHAR2(256);-- ”“◊÷∑˚¥Æ
+  left_numList varTableType;-- ◊Û±ﬂµƒœﬂ¬∑id ˝◊È
+  right_numList varTableType;-- ”“±ﬂµƒœﬂ¬∑id ˝◊È
+  left_site_numList varTableType;-- ◊Û––’æµ„id ˝◊È
+  right_site_numList varTableType;-- ”“––’æµ„id ˝◊È
+  visit_numList varTableType := varTableType();-- “—∑√Œ œﬂ¬∑id
 
-  isBegin NUMBER;-- ÊòØÂê¶ÂºÄÂßãÁ´ô
-  rightLineId NUMBER(38);-- Âè≥ËæπÁ∫øË∑ØID
-  --lastSid Number(38);-- ËÆ∞ÂΩï‰∏ä‰∏Ä‰∏™Á´ôÁÇπid
-  --last_runTime Number(38);-- ËÆ∞ÂΩïËµ∑ÂßãÁ´ôÁÇπÂà∞‰∏ä‰∏Ä‰∏™Á´ôÁÇπÁöÑÊó∂Èó¥
-  --last_distance NUMBER(38);-- ËÆ∞ÂΩïËµ∑ÂßãÁ´ôÁÇπÂà∞‰∏ä‰∏Ä‰∏™Á´ôÁÇπÁöÑË∑ùÁ¶ª
-  MyTab package.TabType;-- Ëá™ÂÆö‰πâËÆ∞ÂΩïË°®Á±ªÂûãÂØπË±°
-  vN Number;-- ‰∏ãÊ†á
-  lineName Varchar(8);-- Á∫øË∑ØÂêç
-  createStr Varchar(128);-- ÂàõÂª∫‰∏¥Êó∂Ë°®ËØ≠Âè•
-  insertStr Varchar(128);-- ÊèíÂÖ•Êï∞ÊçÆËØ≠Âè•
+  isBegin NUMBER;--  «∑Òø™ º’æ
+  rightLineId NUMBER(38);-- ”“±ﬂœﬂ¬∑ID
+  --lastSid Number(38);-- º«¬º…œ“ª∏ˆ’æµ„id
+  --last_runTime Number(38);-- º«¬º∆ º’æµ„µΩ…œ“ª∏ˆ’æµ„µƒ ±º‰
+  --last_distance NUMBER(38);-- º«¬º∆ º’æµ„µΩ…œ“ª∏ˆ’æµ„µƒæ‡¿Î
+  MyTab package.TabType;-- ◊‘∂®“Âº«¬º±Ì¿‡–Õ∂‘œÛ
+  vN Number;-- œ¬±Í
+  lineName Varchar(8);-- œﬂ¬∑√˚
+  createStr Varchar(128);-- ¥¥Ω®¡Ÿ ±±Ì”Ôæ‰
+  insertStr Varchar(128);-- ≤Â»Î ˝æ›”Ôæ‰
   
 BEGIN
-  isBegin := 0;-- ÂàùÂßãÂåñ‰∏∫Èõ∂
+  isBegin := 0;-- ≥ı ºªØŒ™¡„
   vN := 1;
   --last_runTime := 0;
   --last_distance := 0;
   
-  -- Ëé∑ÂæóÁ´ôÁÇπid
+  -- ªÒµ√’æµ„id
   SELECT sid INTO siteId
     FROM SITEINFO
     WHERE SNAME = endsite;
     
-  -- Ëé∑ÂæóÁªèËøáÊ≠§Á´ôÁÇπÁöÑÊâÄÊúâÁ∫øË∑Ø
+  -- ªÒµ√æ≠π˝¥À’æµ„µƒÀ˘”–œﬂ¬∑
   SELECT LLIDSEQ, RLIDSEQ INTO leftStr, rightStr
     FROM SITETOLINE
     WHERE sid = siteId;
     
-  -- Ëé∑ÂæóÁªèËøáÁ´ôÁÇπÁöÑÁ∫øË∑ØidÊï∞ÁªÑ
+  -- ªÒµ√æ≠π˝’æµ„µƒœﬂ¬∑id ˝◊È
   left_numList := str2numList(leftStr);
   right_numList := str2numList(rightStr);
   
-  -- Âæ™ÁéØÂ∑¶Á∫øË∑ØidÊï∞ÁªÑ
+  -- —≠ª∑◊Ûœﬂ¬∑id ˝◊È
   for i in 1 .. left_numList.count 
     LOOP
       dbms_output.put_line(left_numList(i));
-      -- Ëé∑ÂæóÁ∫øË∑ØÂêç
+      -- ªÒµ√œﬂ¬∑√˚
       SELECT Lname INTO lineName
         FROM LINEINFO
         WHERE Lid = left_numList(i);
         
       visit_numList.extend;
-      visit_numList(visit_numList.count) := left_numList(i);-- ËÆ∞ÂΩïÂ∑≤ËÆøÈóÆÁ∫øË∑Ø
+      visit_numList(visit_numList.count) := left_numList(i);-- º«¬º“—∑√Œ œﬂ¬∑
       
-      -- Ëé∑ÂæóÁ∫øË∑ØÁöÑÂ∑¶„ÄÅÂè≥Ë°åÁ´ôÁÇπÂ∫èÂàó
+      -- ªÒµ√œﬂ¬∑µƒ◊Û°¢”“––’æµ„–Ú¡–
       SELECT LSIDSEQ, RSIDSEQ INTO leftStr, rightStr
         FROM LineToSite
         WHERE lid = left_numList(i);
-      -- ÂàÜÂâ≤Â≠óÁ¨¶‰∏≤
+      -- ∑÷∏Ó◊÷∑˚¥Æ
       left_site_numList := str2numList(leftStr); 
       right_site_numList := str2numList(rightStr);
       
-      -- ÂàÜÊûêÂ∑¶ËæπÁöÑÁ´ôÁÇπÂ∫èÂàó
+      -- ∑÷Œˆ◊Û±ﬂµƒ’æµ„–Ú¡–
       for j in 1 .. left_site_numList.count 
         LOOP
-          --dbms_output.put_line(left_site_numList(j));-- ËæìÂá∫ÁúãÁúã 
-          -- ‰ªéÊú¨Á∫øË∑Ø‰∏≠ÊâæÂà∞Ëµ∑ÂßãÁ´ôÁÇπ
+          --dbms_output.put_line(left_site_numList(j));--  ‰≥ˆø¥ø¥ 
+          -- ¥”±æœﬂ¬∑÷–’“µΩ∆ º’æµ„
           IF left_site_numList(j) = siteId THEN 
-            isBegin := 1;-- ÂºÄÂßãÁªüËÆ°
+            isBegin := 1;-- ø™ ºÕ≥º∆
           END IF;
           IF isBegin = 0 THEN
-            -- Ëé∑ÂæóÂèØÁõ¥ËææÁ´ôÁÇπÂêç
+            -- ªÒµ√ø…÷±¥Ô’æµ„√˚
             SELECT Sname INTO MyTab(vN).sname
               FROM SITEINFO
               WHERE sid = left_site_numList(j);
-            -- Ëé∑ÂæóÁ∫øË∑ØÂêç
+            -- ªÒµ√œﬂ¬∑√˚
             MyTab(vN).lname := lineName;
-            -- Ëé∑ÂæóÂ∑¶Âè≥Ë°åÊ†áÂøó
+            -- ªÒµ√◊Û”“––±Í÷æ
             MyTab(vN).runleft := 1;
-            -- Ëé∑ÂæóËøêË°åÊó∂Èó¥‰∏éË∑ùÁ¶ª
+            -- ªÒµ√‘À–– ±º‰”Îæ‡¿Î
             /*SELECT RUNTIME, DISTANCE INTO MyTab(vN).runTime, MyTab(vN).distance
               FROM NEXTSITE
               WHERE STARTSID = lastSid
@@ -91,9 +90,9 @@ BEGIN
                 AND ISLEFT = MyTab(vN).runleft
                 AND endsid = left_site_numList(j);
           
-            MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑÊó∂Èó¥
-            MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑË∑ùÁ¶ª          
-            -- ËÆ∞ÂΩïËµ∑ÂßãÁ´ôÁÇπÂà∞‰∏ä‰∏Ä‰∏™Á´ôÁÇπÁöÑ‰ø°ÊÅØ
+            MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒ ±º‰
+            MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒæ‡¿Î          
+            -- º«¬º∆ º’æµ„µΩ…œ“ª∏ˆ’æµ„µƒ–≈œ¢
             last_runTime := MyTab(vN).runTime;
             last_distance := MyTab(vN).distance;	*/	
             vN := vN + 1;
@@ -105,25 +104,25 @@ BEGIN
         --last_runTime := 0;
         --last_distance := 0; 
       ------------------------------  
-      -- ÂàÜÊûêÂè≥ËæπÁ´ôÁÇπÂ∫èÂàó
+      -- ∑÷Œˆ”“±ﬂ’æµ„–Ú¡–
       for j in 1 .. right_site_numList.count 
         LOOP
           --dbms_output.put_line(right_site_numList(j));
-          -- ‰ªéÊú¨Á∫øË∑Ø‰∏≠ÊâæÂà∞Ëµ∑ÂßãÁ´ôÁÇπ
+          -- ¥”±æœﬂ¬∑÷–’“µΩ∆ º’æµ„
           IF right_site_numList(j) = siteId THEN 
-            isBegin := 1;-- ÂºÄÂßãÁªüËÆ°
+            isBegin := 1;-- ø™ ºÕ≥º∆
           END IF;
           IF isBegin = 0 THEN
-            -- Ëé∑ÂæóÂèØÁõ¥ËææÁ´ôÁÇπÂêç
+            -- ªÒµ√ø…÷±¥Ô’æµ„√˚
             SELECT Sname INTO MyTab(vN).sname
               FROM SITEINFO
               WHERE sid = right_site_numList(j);
-            -- Ëé∑ÂæóÁ∫øË∑ØÂêç
+            -- ªÒµ√œﬂ¬∑√˚
             MyTab(vN).lname := lineName;
-            -- Ëé∑ÂæóÂ∑¶Âè≥Ë°åÊ†áÂøó
+            -- ªÒµ√◊Û”“––±Í÷æ
             MyTab(vN).runleft := 0;
             -- dbms_output.put_line(lastSid || ',' || left_numList(i) || ',' || MyTab(vN).runleft || ',' || right_site_numList(j));
-            -- Ëé∑ÂæóËøêË°åÊó∂Èó¥‰∏éË∑ùÁ¶ª
+            -- ªÒµ√‘À–– ±º‰”Îæ‡¿Î
             /*SELECT RUNTIME, DISTANCE INTO MyTab(vN).runTime, MyTab(vN).distance
               FROM NEXTSITE
               WHERE STARTSID = lastSid
@@ -131,9 +130,9 @@ BEGIN
                 AND ISLEFT = MyTab(vN).runleft
                 AND endsid = right_site_numList(j);
 				
-            MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑÊó∂Èó¥
-            MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑË∑ùÁ¶ª          
-            -- ËÆ∞ÂΩïËµ∑ÂßãÁ´ôÁÇπÂà∞‰∏ä‰∏Ä‰∏™Á´ôÁÇπÁöÑ‰ø°ÊÅØ
+            MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒ ±º‰
+            MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒæ‡¿Î          
+            -- º«¬º∆ º’æµ„µΩ…œ“ª∏ˆ’æµ„µƒ–≈œ¢
             last_runTime := MyTab(vN).runTime;
             last_distance := MyTab(vN).distance;		*/
             vN := vN + 1;
@@ -148,13 +147,13 @@ BEGIN
    
   --------------------------------------------------------  
   dbms_output.put_line('rightLineId');
-  -- Âæ™ÁéØÂè≥ËæπÁ∫øË∑Ø
+  -- —≠ª∑”“±ﬂœﬂ¬∑
   for i in 1 .. right_numList.count 
     LOOP
       --dbms_output.put_line(right_numList(i));
       rightLineId := right_numList(i);
       
-      -- Âà§Êñ≠Á∫øË∑ØÊòØÂê¶Â∑≤ÁªèË¢´ËÆøÈóÆ
+      -- ≈–∂œœﬂ¬∑ «∑Ò“—æ≠±ª∑√Œ 
       for k in 1 .. visit_numList.count
         LOOP
           IF right_numList(i) = visit_numList(k) THEN
@@ -162,35 +161,35 @@ BEGIN
           END IF;
         END LOOP;
         
-      -- Ê≠§Á∫øË∑ØidÊú™Ë¢´ËÆøÈóÆ(‰øùËØÅÊØèÊù°Á∫øË∑ØÂè™Ê£ÄÊü•‰∏ÄÊ¨°)
+      -- ¥Àœﬂ¬∑idŒ¥±ª∑√Œ (±£÷§√øÃıœﬂ¬∑÷ªºÏ≤È“ª¥Œ)
       IF rightLineId != 0 THEN
         dbms_output.put_line(rightLineId);
         SELECT LSIDSEQ, RSIDSEQ INTO leftStr, rightStr
           FROM LineToSite
           WHERE lid = rightLineId;
-        -- ÂàÜÂâ≤Â≠óÁ¨¶‰∏≤
+        -- ∑÷∏Ó◊÷∑˚¥Æ
         left_site_numList := str2numList(leftStr); 
         right_site_numList := str2numList(rightStr);
         
-        -- ÂàÜÊûêÂ∑¶ËæπÁöÑÁ´ôÁÇπÂ∫èÂàó
+        -- ∑÷Œˆ◊Û±ﬂµƒ’æµ„–Ú¡–
         for j in 1 .. left_site_numList.count 
           LOOP
             --dbms_output.put_line(left_site_numList(j));
-             -- ‰ªéÊú¨Á∫øË∑Ø‰∏≠ÊâæÂà∞Ëµ∑ÂßãÁ´ôÁÇπ
+             -- ¥”±æœﬂ¬∑÷–’“µΩ∆ º’æµ„
             IF left_site_numList(j) = siteId THEN 
-              isBegin := 1;-- ÂºÄÂßãÁªüËÆ°
+              isBegin := 1;-- ø™ ºÕ≥º∆
             END IF;
             IF isBegin = 0 THEN
-              -- Ëé∑ÂæóÂèØÁõ¥ËææÁ´ôÁÇπÂêç
+              -- ªÒµ√ø…÷±¥Ô’æµ„√˚
               SELECT Sname INTO MyTab(vN).sname
                 FROM SITEINFO
                 WHERE sid = left_site_numList(j);
-              -- Ëé∑ÂæóÁ∫øË∑ØÂêç
+              -- ªÒµ√œﬂ¬∑√˚
               MyTab(vN).lname := lineName;
-              -- Ëé∑ÂæóÂ∑¶Âè≥Ë°åÊ†áÂøó
+              -- ªÒµ√◊Û”“––±Í÷æ
               MyTab(vN).runleft := 1;
               -- dbms_output.put_line(lastSid || ',' || left_numList(i) || ',' || MyTab(vN).runleft || ',' || left_site_numList(j));
-              -- Ëé∑ÂæóËøêË°åÊó∂Èó¥‰∏éË∑ùÁ¶ª
+              -- ªÒµ√‘À–– ±º‰”Îæ‡¿Î
               /*SELECT RUNTIME, DISTANCE INTO MyTab(vN).runTime, MyTab(vN).distance
                 FROM NEXTSITE
                 WHERE STARTSID = lastSid
@@ -198,9 +197,9 @@ BEGIN
                   AND ISLEFT = MyTab(vN).runleft
                   AND endsid = left_site_numList(j);
 				
-              MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑÊó∂Èó¥
-              MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑË∑ùÁ¶ª          
-              -- ËÆ∞ÂΩïËµ∑ÂßãÁ´ôÁÇπÂà∞‰∏ä‰∏Ä‰∏™Á´ôÁÇπÁöÑ‰ø°ÊÅØ
+              MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒ ±º‰
+              MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒæ‡¿Î          
+              -- º«¬º∆ º’æµ„µΩ…œ“ª∏ˆ’æµ„µƒ–≈œ¢
               last_runTime := MyTab(vN).runTime;
               last_distance := MyTab(vN).distance;	*/	
               vN := vN + 1;
@@ -212,24 +211,24 @@ BEGIN
           --last_runTime := 0;
           --last_distance := 0; 
 		----------------------------  
-        -- ÂàÜÊûêÂè≥ËæπÁ´ôÁÇπÂ∫èÂàó
+        -- ∑÷Œˆ”“±ﬂ’æµ„–Ú¡–
         for j in 1 .. right_site_numList.count 
           LOOP
             --dbms_output.put_line(right_site_numList(j));
-            -- ‰ªéÊú¨Á∫øË∑Ø‰∏≠ÊâæÂà∞Ëµ∑ÂßãÁ´ôÁÇπ
+            -- ¥”±æœﬂ¬∑÷–’“µΩ∆ º’æµ„
             IF right_site_numList(j) = siteId THEN 
-            isBegin := 1;-- ÂºÄÂßãÁªüËÆ°
+            isBegin := 1;-- ø™ ºÕ≥º∆
             END IF;
             IF isBegin = 0 THEN
-              -- Ëé∑ÂæóÂèØÁõ¥ËææÁ´ôÁÇπÂêç
+              -- ªÒµ√ø…÷±¥Ô’æµ„√˚
               SELECT Sname INTO MyTab(vN).sname
                 FROM SITEINFO
                 WHERE sid = right_site_numList(j);
-              -- Ëé∑ÂæóÁ∫øË∑ØÂêç
+              -- ªÒµ√œﬂ¬∑√˚
               MyTab(vN).lname := lineName;
-              -- Ëé∑ÂæóÂ∑¶Âè≥Ë°åÊ†áÂøó
+              -- ªÒµ√◊Û”“––±Í÷æ
               MyTab(vN).runleft := 0;
-              -- Ëé∑ÂæóËøêË°åÊó∂Èó¥‰∏éË∑ùÁ¶ª
+              -- ªÒµ√‘À–– ±º‰”Îæ‡¿Î
               -- dbms_output.put_line(lastSid || ',' || left_numList(i) || ',' || MyTab(vN).runleft || ',' || right_site_numList(j));
               /*SELECT RUNTIME, DISTANCE INTO MyTab(vN).runTime, MyTab(vN).distance
                 FROM NEXTSITE
@@ -238,9 +237,9 @@ BEGIN
                   AND ISLEFT = MyTab(vN).runleft
                   AND endsid = right_site_numList(j);
 				
-              MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑÊó∂Èó¥
-              MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ‰ªéËµ∑ÂßãÁ´ôÁÇπÂà∞Êú¨Á´ôÁÇπÁöÑË∑ùÁ¶ª          
-              -- ËÆ∞ÂΩïËµ∑ÂßãÁ´ôÁÇπÂà∞‰∏ä‰∏Ä‰∏™Á´ôÁÇπÁöÑ‰ø°ÊÅØ
+              MyTab(vN).runTime := MyTab(vN).runTime + last_runTime;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒ ±º‰
+              MyTab(vN).distance := MyTab(vN).distance + last_distance;-- ¥”∆ º’æµ„µΩ±æ’æµ„µƒæ‡¿Î          
+              -- º«¬º∆ º’æµ„µΩ…œ“ª∏ˆ’æµ„µƒ–≈œ¢
               last_runTime := MyTab(vN).runTime;
               last_distance := MyTab(vN).distance;	*/	
               vN := vN + 1;
@@ -254,7 +253,7 @@ BEGIN
       END IF; 
     END LOOP;
     DBMS_OUTPUT.PUT_LINE('okok');
-    --ËÆøÈóÆ
+    --∑√Œ 
     vN := MyTab.First;
     For varR In vN..MyTab.count
       Loop
@@ -264,11 +263,11 @@ BEGIN
               || MyTab(vN).lname || ''','
               || MyTab(vN).runleft || ',0, 0)';
 
-        execute immediate insertStr; ----‰ΩøÁî®Âä®ÊÄÅSQLËØ≠Âè•Êù•ÊâßË°å
+        execute immediate insertStr; ---- π”√∂ØÃ¨SQL”Ôæ‰¿¥÷¥––
         vN := MyTab.Next(vN);
       End Loop;
     Open sp_coesor FOR 
-      select * 
-        from (select t.*,rownum ron from TEMP_DIRECTACCESS t )
-        where ron > len;
+      SELECT * FROM TEMP_DIRECTACCESS;
+    --  ÷∂Ø«Âø’¡Ÿ ±±Ìƒ⁄»›
+    execute immediate 'delete from TEMP_DIRECTACCESS';
 END BEDIRECTACCESS;

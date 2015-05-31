@@ -2,13 +2,13 @@
 
 import java.sql.Connection;
 
-import com.snail.traffic.persistence.admin.AdminLineToSiteTable;
-import com.snail.traffic.persistence.admin.AdminLineTable;
-import com.snail.traffic.persistence.admin.AdminNextSiteTable;
-import com.snail.traffic.persistence.admin.AdminSiteToLineTable;
-import com.snail.traffic.persistence.admin.AdminSiteTable;
-import com.snail.traffic.persistence.select.SelectOperated;
 import com.snail.traffic.container.data.TwoStringStruct;
+import com.snail.traffic.persistence.admin.AdminLineTable;
+import com.snail.traffic.persistence.admin.AdminLineToSiteTable;
+import com.snail.traffic.persistence.admin.AdminNextSiteTable;
+import com.snail.traffic.persistence.admin.AdminSiteTable;
+import com.snail.traffic.persistence.admin.AdminSiteToLineTable;
+import com.snail.traffic.persistence.select.SelectSiteToLineView;
 
 	/*
 	 * 1.从前端获取线路名称lname
@@ -26,7 +26,8 @@ public class AddLine {
 	
 	private AdminSiteTable adsite;		// 站点表管理对象
 	private AdminLineToSiteTable alinesite;// 线路站点表管理对象
-	private SelectOperated seloper;		// 视图查询对象
+
+	private SelectSiteToLineView sstlv;
 	private AdminNextSiteTable adnextsite;// 下一站点表管理对象
 	private TwoStringStruct tls;		//
 	
@@ -35,27 +36,12 @@ public class AddLine {
 		adsiteline 	=  new AdminSiteToLineTable(con);
 		adsite 		= new AdminSiteTable(con);            //站点表对象
 		alinesite 	=  new AdminLineToSiteTable(con);
-		seloper 	=  new SelectOperated(con);
+		
+		sstlv = new SelectSiteToLineView(con);
 		adnextsite 	= new AdminNextSiteTable(con);
 	}
 	
-	//判断输入的线路是否已存在,若存在才进行下一步
-	public boolean isExist(String linename) {
-		
-		int line = adline.getId(linename);
-		
-		//不存在该线路信息时添加线路表
-		if(line == 0){
-			
-			/*前端显示可用*/
-			return true;
-			
-		}
-		else{
-			/*前端显示已存在该线路名*/
-			return false;
-		}
-	}
+	
 	
 	/*前端显示已经添加完成*/
 	public boolean confirmAddLineInfo(String linename
@@ -76,75 +62,11 @@ public class AddLine {
 		//增加线路表信息
 		adline.addLineInfo(lid,linename,linterval,lfirstopen,llastopen,lfirstclose,llastclose,lprice,lcardprice,lcompany,remark);
 		
-		///////////////////////////////////////////////////
-		// Blyde 的代码 ，杰哥可以忽略
+	
 		String leftSidSeq = addTable(leftSite, lid, true);
 		String rightSidSeq = addTable(rightSite, lid, false);
 		alinesite.addKeyToValue(lid,leftSidSeq,rightSidSeq);	
 		return true;
-		//////////////////////////////////////////////////
-		
-		
-//		//修改站点线路表信息
-//		String lsidseq = "";
-//		String rsidseq = "";
-//		int lsid = 0;
-//		int rsid = 0;
-//		int temp = 0;
-//		
-//		for(int i = 0; i < leftSite.length; i++) {
-//			
-//			temp = lsid;          //上一个站点id
-//			lsid = ast.getId(leftSite[i]);            //获取sid
-//			if(temp != 0){
-//				/**
-//				 * 时间和距离暂时设为0，后期需要前端提供
-//				 */
-//				anst.addKeyToValue(temp,lid,1,lsid,0,0);
-//			}
-//			if(lsidseq.equals("")){
-//				lsidseq = lsid + "";
-//			}
-//			else{
-//				lsidseq += "," + lsid ;
-//			}
-//			
-//			tls = so.getSiteLineSeq(leftSite[i]);    //根据站点名获取左行和右行线路id字符串
-//			String leftStr = tls.get(true);
-//			String rightStr = tls.get(false);
-//			leftStr = leftStr + "," + lid;           //更新站点线路表
-//			aslt.updateKeyToValue(lsid,leftStr,rightStr);
-//			
-//		}
-//
-//
-//		for(int i = 0; i< rightSite.length; i++){
-//			
-//			temp = rsid;
-//			rsid = ast.getId(rightSite[i]);            //获取sid
-//			if(temp != 0){
-//				/**
-//				 * 时间和距离暂时设为0，后期需要前端提供
-//				 */
-//				anst.addKeyToValue(temp,lid,0,rsid,0,0);
-//			}
-//			
-//			if(rsidseq.equals("")){
-//				rsidseq = rsid + "";
-//			}
-//			else{
-//				rsidseq += "," + rsid ;
-//			}
-//			
-//			tls = so.getSiteLineSeq(rightSite[i]);    //根据站点名获取左行和右行线路id字符串
-//			String leftStr = tls.get(true);
-//			String rightStr = tls.get(false);
-//			rightStr = rightStr + "," + lid;           //更新站点线路表
-//			aslt.updateKeyToValue(rsid,leftStr,rightStr);
-//		}	
-//		alst.addKeyToValue(lid,lsidseq,rsidseq);
-//		
-//		return true;
 	}
 	
 	/**
@@ -187,7 +109,8 @@ public class AddLine {
 			else
 				sidseq += ("," + sid);
 			
-			tls = seloper.getSiteLineSeq(array[i]);    //根据站点名获取左行和右行线路id字符串
+			//tls = seloper.getSiteLineSeq(array[i]);    //根据站点名获取左行和右行线路id字符串
+			tls = sstlv.getSeq(array[i]);
 			lineseq = tls.get(isleft);	
 			lineseq += ("," + lid);   //更新站点线路表
 			
