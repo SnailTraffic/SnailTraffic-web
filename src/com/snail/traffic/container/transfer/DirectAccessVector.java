@@ -1,8 +1,8 @@
 package com.snail.traffic.container.transfer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
 import com.snail.traffic.container.access.DirectAccessStruct;
 import com.snail.traffic.container.priorityqueue.TimePriorityQueue;
@@ -13,7 +13,7 @@ public class DirectAccessVector extends BaseAccessVector {
 	 * 可直达的站点向量
 	 */
 	public DirectAccessVector() {
-		relateVector = new Vector<DirectAccessStruct>();
+		relateVector = new ArrayList<DirectAccessStruct>();
 	}
 		
 	/**

@@ -13,8 +13,8 @@ import com.snail.traffic.container.info.CovertToJsonObject;
  */
 public class TransitScheme extends BaseTransitStruct implements CovertToJsonObject {
 	public Vector<TransitSection> transitSections = new Vector<>();
-	public int time = 0;
-	public int distance = 0;
+	//public String startSite;
+	//public String endSite;
 
 	@Override
 	public JSONObject toJSONObject() {

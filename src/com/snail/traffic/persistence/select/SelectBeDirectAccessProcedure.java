@@ -3,6 +3,7 @@ package com.snail.traffic.persistence.select;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import oracle.jdbc.OracleCallableStatement;
@@ -43,8 +44,8 @@ public class SelectBeDirectAccessProcedure extends SelectAccessProcedure {
      * @return
      */
     @Override
-    public Vector<BeDirectAccessStruct> getAccessSites(String endSite) {
-        Vector<BeDirectAccessStruct> directSites = null;// 可直达站点向量
+    public ArrayList<BeDirectAccessStruct> getAccessSites(String endSite) {
+	ArrayList<BeDirectAccessStruct> directSites = null;// 可直达站点向量
         BeDirectAccessStruct newElement = null;
         try {
             this.pre_Procedure.setString(1, endSite);
@@ -52,7 +53,7 @@ public class SelectBeDirectAccessProcedure extends SelectAccessProcedure {
             this.pre_Procedure.execute();
             ResultSet rs = ((OracleCallableStatement)this.pre_Procedure).getCursor(2);
 
-            directSites = new Vector<BeDirectAccessStruct>();
+            directSites = new ArrayList<BeDirectAccessStruct>();
             while (rs.next()) {
                 newElement = new BeDirectAccessStruct();
                 newElement.siteName = rs.getString("SNAME");

@@ -3,6 +3,7 @@ package com.snail.traffic.persistence.select;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import oracle.jdbc.OracleCallableStatement;
@@ -45,8 +46,8 @@ public class SelectDirectAccessProcedure extends SelectAccessProcedure {
      *          Vector<>
      */
     @Override
-    public Vector<DirectAccessStruct> getAccessSites(String startSite) {
-        Vector<DirectAccessStruct> directSites = null;
+    public ArrayList<DirectAccessStruct> getAccessSites(String startSite) {
+	ArrayList<DirectAccessStruct> directSites = null;
         DirectAccessStruct newElement = null;
         try {
             this.pre_Procedure.setString(1, startSite);
@@ -54,7 +55,7 @@ public class SelectDirectAccessProcedure extends SelectAccessProcedure {
             this.pre_Procedure.execute();
             ResultSet rs = ((OracleCallableStatement)this.pre_Procedure).getCursor(2);
 
-            directSites = new Vector<DirectAccessStruct>();
+            directSites = new ArrayList<DirectAccessStruct>();
             while (rs.next()) {
                 newElement = new DirectAccessStruct();
                 newElement.siteName = rs.getString("SNAME");
