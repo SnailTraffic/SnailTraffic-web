@@ -19,6 +19,25 @@ function openSidebar() {
     });
 }
 
+function drawBusTransit(list) {
+	// The route points are not correct. Deprecated
+    /*
+    map.clearOverlays();
+	var geoCoder = new BMap.Geocoder();
+	var geoPosition = [];
+	
+	for (var i = 0; i < list.length; i++) {
+		geoCoder.getPoint('武汉市' + list[i] + '-公交车站', function (point) {
+			if (point) {
+				geoPosition.push(point);
+				var marker = new BMap.Marker(point);
+				map.addOverlay(marker);
+			}
+		}, '武汉市');
+	}
+	*/
+}
+
 function drawBusLine(lineName, left) {
     if (map) {
         var busline = new BMap.BusLineSearch(map, {
@@ -27,6 +46,8 @@ function drawBusLine(lineName, left) {
                 if (result) {
                     var line = result.getBusListItem(left ? 0 : 1);
                     busline.getBusLine(line);
+                } else {
+                    map.clearOverlays();
                 }
             }
         });
@@ -46,12 +67,8 @@ function drawBusStation(stationName) {
             } else {
                 map.clearOverlays();
             }
-        });
+        }, '武汉市');
     }
-}
-
-function mapClearOverlay() {
-	map.clearOverlays();
 }
 
 var map = null; // global
@@ -67,8 +84,8 @@ $(document).ready(function (e) {
     try {
         map = new BMap.Map('map-canvas', {minZoom: 12});
 
-        map.setCurrentCity('武汉');
         map.centerAndZoom('武汉', 11);
+        map.setCurrentCity('武汉');
         map.enableScrollWheelZoom(true);
 
         map.addControl(new BMap.MapTypeControl({anchor: BMAP_ANCHOR_TOP_LEFT}));

@@ -39,8 +39,9 @@ $(function () {
                 if (uploading) {
                     $(this).css('margin-left', '-20%');
                     ss();
-                } else { 
-                    $(this).css('margin-left', '0')
+                } else {
+                    $(this).stop(true, false)
+                        .css('margin-left', '0')
                         .css('width', '1%')
                         .animate({width: '100%'}, 2000);
                 }

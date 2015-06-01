@@ -60,12 +60,12 @@ public class SelectTransfer {
 			selAccess = new SelectBeDirectAccessProcedure(con);
 			be_directV.relateSite = end;
 			be_directV.relateVector = selAccess.getAccessSites(end);
-			Set<String> setIntersection = intersection(directV.getSiteSetFromVector(), be_directV.getSiteSetFromVector());
 			
-			if (onceTransfer(allSchemes, directV, be_directV, setIntersection) >= 3)
+			if (onceTransfer(allSchemes, directV, be_directV) >= 3)
 				System.out.println("has 3 lines");
-			else
-				System.out.println("has not 3 lines");
+			else {
+			    twiceTransfer(allSchemes, directV, be_directV);
+			}	
 		}
 		ret.schemes = getPriorityRoute(allSchemes);
 		return ret;
@@ -91,7 +91,7 @@ public class SelectTransfer {
 
 		for (int i = 0; i < size; i++) {
 			newScheme = new TransitScheme();
-			section = transitVector.poll();	// 锟斤拷锟斤拷锟斤拷榷锟斤拷锟斤拷械锟绞憋拷锟斤拷锟斤拷锟皆拷锟�
+			section = transitVector.poll();	
 			newScheme.transitSections.add(section);
 			newScheme.time = section.time;
 			newScheme.distance = section.distance;
@@ -100,6 +100,61 @@ public class SelectTransfer {
 		return allScheme.size();
 	}
 
+	
+
+	/**
+	 * 一次换乘查询
+	 * @param allScheme
+	 * 			所有方案
+	 * @param direct
+	 * 			起始站点直达站点
+	 * @param be_direct
+	 * 			终止站点被直达站点
+	 * @param interset
+	 * 			交集（可换乘站点）
+	 * @return 当前方案数
+	 */
+	private int onceTransfer(TotalTimePriorityQueue allScheme
+				, BaseAccessVector direct
+				, BaseAccessVector be_direct) {
+		TransitScheme newScheme 		= null;	// new scheme
+		TimePriorityQueue firstSectionQueue 	= null;	
+		TimePriorityQueue secondSectionQueue 	= null;	
+		TransitSection firstSection 		= null;
+		TransitSection secondSection 		= null;
+
+		Set<String> setIntersection = intersection(direct.getSiteSetFromVector(), be_direct.getSiteSetFromVector());
+		// 循环可换乘站点
+		for (String s: setIntersection) {
+			System.out.println(s);
+
+			firstSectionQueue = direct.getVectorTo(s);
+			secondSectionQueue = be_direct.getVectorTo(s);
+			firstSection = firstSectionQueue.poll();
+			secondSection = secondSectionQueue.poll();
+			
+			System.out.println(firstSection.lineName);
+			System.out.println(secondSection.lineName);
+			
+			newScheme = new TransitScheme();
+			newScheme.transitSections.add(firstSection);
+			newScheme.transitSections.add(secondSection);
+			newScheme.time = firstSection.time + secondSection.time;
+			newScheme.distance = firstSection.distance + secondSection.distance;
+			allScheme.add(newScheme);
+		}
+		System.out.println("直达+一次换乘" + allScheme.size());
+		return allScheme.size();
+	}
+
+	private int twiceTransfer(TotalTimePriorityQueue allScheme
+				, BaseAccessVector direct
+				, BaseAccessVector be_direct) {
+	    
+	    
+	    return 0;
+	}
+	
 	/**
 	 * get 5 Schemes from  Priority queue
 	 * @param allSchemes
@@ -146,61 +201,6 @@ public class SelectTransfer {
 				setIntersection.add(s);
 		}
 		return setIntersection;
-	}
-
-	/**
-	 * 一次换乘查询
-	 * @param allScheme
-	 * 			所有方案
-	 * @param direct
-	 * 			起始站点直达站点
-	 * @param be_direct
-	 * 			终止站点被直达站点
-	 * @param interset
-	 * 			交集（可换乘站点）
-	 * @return 当前方案数
-	 */
-	private int onceTransfer(TotalTimePriorityQueue allScheme
-				, BaseAccessVector direct
-				, BaseAccessVector be_direct
-				, Set<String> interSet) {
-		TransitScheme newScheme 		= null;	// new scheme
-		TimePriorityQueue firstSectionQueue 	= null;	
-		TimePriorityQueue secondSectionQueue 	= null;	
-		TransitSection firstSection 		= null;
-		TransitSection secondSection 		= null;
-
-		// 循环可换乘站点
-		for (String s: interSet) {
-			System.out.println(s);
-
-			firstSectionQueue = direct.getVectorTo(s);
-			secondSectionQueue = be_direct.getVectorTo(s);
-			firstSection = firstSectionQueue.poll();
-			secondSection = secondSectionQueue.poll();
-			
-			System.out.println(firstSection.lineName);
-			System.out.println(secondSection.lineName);
-			
-			newScheme = new TransitScheme();
-			newScheme.transitSections.add(firstSection);
-			newScheme.transitSections.add(secondSection);
-			newScheme.time = firstSection.time + secondSection.time;
-			newScheme.distance = firstSection.distance + secondSection.distance;
-			allScheme.add(newScheme);
-		}
-		System.out.println("直达+一次换乘" + allScheme.size());
-		return allScheme.size();
-	}
-
-	/**
-	 * 二次换乘
-	 * @return
-	 */
-	private int twiceTransfer(TotalTimePriorityQueue allScheme
-				, ) {
-	    
-	    
 	}
 	
 	/*

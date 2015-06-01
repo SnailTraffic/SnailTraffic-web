@@ -17,19 +17,40 @@ function clearResult () {
 }
 
 function showBusExchangeResult (json) {
-    $('#search-reault-title').html('');
+    $('#search-result-title').html(json.start + ' &rarr;<br/>' + json.end);
     $('#search-result-desc').html('');
 
     var $template_root = $('#bus-exchange-scheme-template');
     var $template_item_root = $('#bus-exchange-scheme-part-template');
+    
+    var newSchemeItem = function (line, start, end) {
+    	var str = $template_item_root.html();
+    	return str.replace('{lineName}', line).replace('{start}', start).replace('{end}', end);
+    };
+
+    var newScheme = function (name, scheme) {
+    	var str = $template_root.html();
+    	return str.replace('{schemeName}', name).replace('{listItem}', scheme);
+    };
 
     $('.list-left-wrap').css('width', '100%');
     $('.list-right-wrap').css('display', 'none');
 
-    var list = $('.list-left-wrap ul');
-    var schemeStr = ''
-    var itemStr = '';
-
+    var $list = $('.list-left-wrap ul');
+    var scheme;
+    var section;
+    var str;
+    
+    for (var i = 0; i < json.schemes.length; i++) {
+    	scheme = json.schemes[i];
+    	str = '';
+    	for (var j = 0; j < scheme.sections.length; j++) {
+    		section = scheme.sections[j];
+    		str += newSchemeItem(section.name, section.start, section.end);
+    	}
+    	
+    	$list.append(newScheme(scheme.title, str));
+    }
 }
 
 function showBusLineResult(json) {
@@ -56,6 +77,7 @@ function showBusLineResult(json) {
         rightList.append('<li>&nbsp;</li>');
     }
 
+    map.clearOverlays();
     drawBusLine(json.title, true);
 }
 
@@ -83,6 +105,7 @@ function showBusStationResult(json) {
         rightList.append('<li>&nbsp;</li>');
     }
 
+    map.clearOverlays();
     drawBusStation(json.title);
 }
 
@@ -195,7 +218,7 @@ $(function () {
                 case 1: // Exchange
                     setSidebarVisibility(true);
                     openSidebar();
-                    showBusExchangeResult(ret.schemes);
+                    showBusExchangeResult(ret);
                     break;
                 case 2: // Line
                     setSidebarVisibility(true);
@@ -233,7 +256,19 @@ $(function () {
         return false;
     });
 
-    $('.line-exchange-scheme-title').click(function (e) {
-        $(this).next('.line-exchange-scheme-body').toggle();
+    $('.list-wrap ul').delegate('.line-exchange-scheme-title', 'click', function (e) {
+    	var $body = $(this).next('.line-exchange-scheme-body');
+    	$('.line-exchange-scheme-body').hide();
+    	$body.toggle();
+    	
+    	var list = [];
+    	$body.find('.l-ex-si-start').each(function (i, val) {
+    		list.push(val.innerText);
+    	});
+    	
+    	list.push($body.find('.l-ex-si-stop').last().text());
+
+        map.clearOverlays();
+    	drawBusTransit(list);
     });
 });

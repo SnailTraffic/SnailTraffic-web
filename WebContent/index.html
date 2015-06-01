@@ -53,8 +53,8 @@
     <script>
         $(document).ready(function () {
             changeTab('#tab-group1-tab1');
-            // closeSidebar();
-            // setSidebarVisibility(false);
+            closeSidebar();
+            setSidebarVisibility(false);
         });
     </script>
 </head>
@@ -209,16 +209,18 @@
 <!-- Scheme template -->
 <ul class="hidden" id="bus-exchange-scheme-template">
     <li class="panel panel-default line-exchange-scheme-item">
-        <div class="panel-heading text-left line-exchange-scheme-title" role="button">{schemeName}</div>
+        <div class="panel-heading text-left line-exchange-scheme-title" role="button">
+        {schemeName}
+        </div>
         <ol class="list-group line-exchange-scheme-body">
-            {listItem}
+        	{listItem}
         </ol>
     </li>
 </ul>
 <!-- Scheme item template -->
 <ol class="hidden" id="bus-exchange-scheme-part-template">
     <li class="list-group-item">
-        <b class="l-ex-si-start">{start}</b><span>乘坐</span><b class="l-ex-si-busline">{lineName}</b><span>在</span><b class="l-ex-si-stop">{stop}</b><span>下车</span>
+        <b class="l-ex-si-start">{start}</b><span>乘坐</span><b class="l-ex-si-busline">{lineName}</b><span>在</span><b class="l-ex-si-stop">{end}</b><span>下车</span>
     </li>
 </ol>
 </body>

@@ -34,9 +34,9 @@
         #ledit-station-template,
         #ledit-line-status,
         #ledit-linename-new-wrapper,
-        .panel-collapse {
-            display: none;
-        }
+
+        .panel-description b { margin: 0 4px; }
+        .panel-collapse { display: none; }
 
         #ledit-linename-loaded { margin-right: 8px; }
 
@@ -94,7 +94,7 @@
                      role="progressbar" aria-valuemin="0" aria-valuemax="100">
                 </div>
             </div>
-            <div class="alert alert-danger alert-dismissible margin-top-fix" id="upload-error-msg" role="alert">
+            <div class="alert alert-danger alert-dismissible margin-top-fix hidden" id="upload-error-msg" role="alert">
                 <button class="close" type="button" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -109,12 +109,18 @@
         <div class="panel-heading">
             <span>线路编辑</span>
             <div class="open-close-checkbox-wrapper">
-            <input class="open-close-checkbox" type="checkbox" data-toggle="toggle" data-size="mini" data-width="50"
-                   data-on="展开" data-off="折叠" data-onstyle="success" data-offstyle="danger">
+                <input class="open-close-checkbox" type="checkbox" data-toggle="toggle" data-size="mini" data-width="50"
+                       data-on="展开" data-off="折叠" data-onstyle="success" data-offstyle="danger">
             </div>
         </div>
         <div class="panel-body panel-collapse">
             <form action="line-edit.jsp" method="post">
+                <div class="form-group row">
+                    <div class="col-xs-12 panel-description">
+                        输入一个已存在的线路名称并点击<b>载入线路信息</b>以<b>修改线路</b>或者<b>删除线路</b><br/>
+                        输入一个不存在的线路名称并向站点列表添加站点以<b>新增线路</b>
+                    </div>
+                </div>
                 <div class="form-group" id="ledit-linename-wrapper">
                     <label class="sr-only" for="ledit-linename">线路名称</label>
                     <label class="sr-only" for="ledit-linename-new">新线路名称</label>
@@ -145,9 +151,9 @@
                 <div class="form-group row">
                     <div class="col-xs-3">
                         <div class="panel panel-default panel-margin-bottom-fix">
-                            <div class="panel-heading">选择添加车站</div>
+                            <div class="panel-heading">选择添加站点</div>
                             <div class="panel-body">
-                                <label class="sr-only" for="ledit-station-search">搜索站点名称</label>
+                                <label class="sr-only" for="ledit-station-search">输入站点名以添加到列表</label>
                                 <input class="form-control" id="ledit-station-search" type="text"
                                        placeholder="输入站点名以添加到列表" autocomplete="off">
                             </div>
@@ -173,7 +179,30 @@
         </div>
     </div>
 </div>
-
+<div class="container">
+    <div class="panel panel-primary" id="sedit-panel-root">
+        <div class="panel-heading">
+            <span>站点编辑</span>
+            <div class="open-close-checkbox-wrapper">
+                <input class="open-close-checkbox" type="checkbox" data-toggle="toggle" data-size="mini" data-width="50"
+                       data-on="展开" data-off="折叠" data-onstyle="success" data-offstyle="danger">
+            </div>
+        </div>
+        <div class="panel-body panel-collapse">
+            <form action="station-edit.jsp" method="post">
+                <div class="form-group row">
+                </div>
+                <div class="form-group row">
+                    <div class="col-xs-3">
+                        <div class="panel panel-default pan-margin-bottom-fix">
+                            <div class="panel-heading">选择要操作的站点</div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- a li element template -->
 <ul id="ledit-station-template">
     <!--

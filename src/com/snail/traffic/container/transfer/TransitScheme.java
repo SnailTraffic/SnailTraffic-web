@@ -32,7 +32,7 @@ public class TransitScheme extends BaseTransitStruct implements CovertToJsonObje
 			}
 
 			o.put("title", title);
-			o.put("scheme", a);
+			o.put("sections", a);
 			o.put("time", t);
 			o.put("distance", d);
 		} catch (Exception e){
