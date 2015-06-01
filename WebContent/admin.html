@@ -12,6 +12,7 @@
     <script src="js/ajaxsubmit.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/admin-ledit.js"></script>
+    <script src="js/admin-sedit.js"></script>
 
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-toggle.min.css">
@@ -31,12 +32,11 @@
         }
 
         #upload-error-msg,
-        #ledit-station-template,
         #ledit-line-status,
-        #ledit-linename-new-wrapper,
-
         .panel-description b { margin: 0 4px; }
         .panel-collapse { display: none; }
+
+        .form-neccesary { margin-left: 4px; color: red; }
 
         #ledit-linename-loaded { margin-right: 8px; }
 
@@ -56,6 +56,7 @@
             text-align: center;
         }
 
+        .tab-content { margin-top: 16px; }
         .open-close-checkbox-wrapper {
             position: absolute;
             right: 42px;
@@ -70,6 +71,27 @@
         #ledit-msg { margin-right: 64px; overflow: hidden; }
         #ledit-msg b { padding: 0 8px; }
 
+        .tag {
+            display: inline-block;
+            padding: 4px 6px;
+            margin-bottom: 4px;
+            border: solid 1px #ccc;
+            border-radius: 4px;
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            cursor: default;
+        }
+        .tag .tag-content { margin-right: 4px; }
+        .tag .tag-remove { color: #337ab7; font-weight: bold; }
+        .tag .tag-remove:hover { color: #23527c; }
+
+        #sedit-t1-l-left, #sedit-t1-l-right { height: 164px; overflow-x: hidden; overflow-y: auto; }
+
+        .__template { display: none; }
     </style>
 </head>
 <body>
@@ -113,14 +135,18 @@
                        data-on="展开" data-off="折叠" data-onstyle="success" data-offstyle="danger">
             </div>
         </div>
-        <div class="panel-body panel-collapse">
-            <form action="line-edit.jsp" method="post">
-                <div class="form-group row">
-                    <div class="col-xs-12 panel-description">
-                        输入一个已存在的线路名称并点击<b>载入线路信息</b>以<b>修改线路</b>或者<b>删除线路</b><br/>
-                        输入一个不存在的线路名称并向站点列表添加站点以<b>新增线路</b>
-                    </div>
+        <div class="panel-body panel-collapse container-fluid">
+            <div class="row">
+                <div class="col-xs-12 tab-pane">
+                    <ul class="nav nav-tabs nav-justified" id="ledit-tabs" role="tablist" data-toggle="dropdown">
+                        <li class="active" role="presentation"><a href="#ledit-tab1">新建线路</a></li>
+                        <li role="presentation"><a href="#ledit-tab2">修改线路</a></li>
+                        <li role="presentation"><a href="#ledit-tab3">删除线路</a></li>
+                    </ul>
                 </div>
+            </div>
+
+            <form class="ledit-tab tab-content" id="ledit-tab1" action="line-edit.jsp" method="post">
                 <div class="form-group" id="ledit-linename-wrapper">
                     <label class="sr-only" for="ledit-linename">线路名称</label>
                     <label class="sr-only" for="ledit-linename-new">新线路名称</label>
@@ -171,10 +197,22 @@
                 </div>
                 <div style="text-align: right">
                     <span id="ledit-msg"></span>
-                    <button class="btn btn-success ledit-submit" id="ledit-btn-add" type="button" value="1">确认新增</button>
-                    <button class="btn btn-warning ledit-submit" id="ledit-btn-alter" type="button" value="0">确认修改</button>
-                    <button class="btn btn-danger ledit-submit" id="ledit-btn-remove" type="button" value="-1">确认删除</button>
+                    <button class="btn btn-success ledit-submit" id="ledit-btn-add" type="button" value="1">新增</button>
+                    <button class="btn btn-warning ledit-submit" id="ledit-btn-alter" type="button" value="0">修改</button>
+                    <button class="btn btn-danger ledit-submit" id="ledit-btn-remove" type="button" value="-1">删除</button>
                 </div>
+            </form>
+
+            <form class="ledit-tab tab-content" id="ledit-tab2" action="line-edit.jsp" method="post" role="form">
+                <div class="form-group" id="ledit-t1-lwrapper">
+                    <div class="input-group">
+
+                    </div>
+                </div>
+            </form>
+
+            <form class="ledit-tab tab-content" id="ledit-tab3" action="line-edit.jsp" method="post" role="form">
+
             </form>
         </div>
     </div>
@@ -188,23 +226,75 @@
                        data-on="展开" data-off="折叠" data-onstyle="success" data-offstyle="danger">
             </div>
         </div>
-        <div class="panel-body panel-collapse">
-            <form action="station-edit.jsp" method="post">
-                <div class="form-group row">
+        <div class="panel-body panel-collapse container-fluid">
+            <div class="row">
+                <div class="col-xs-12 tab-pane">
+                    <ul class="nav nav-tabs nav-justified" id="sedit-tabs" role="tablist" data-toggle="dropdown">
+                        <li class="active" role="presentation"><a href="#sedit-tab-add">新建站点</a></li>
+                        <li role="presentation"><a href="#sedit-tab-alter">修改站点</a></li>
+                        <li role="presentation"><a href="#sedit-tab-remove">删除站点</a></li>
+                    </ul>
                 </div>
-                <div class="form-group row">
-                    <div class="col-xs-3">
-                        <div class="panel panel-default pan-margin-bottom-fix">
-                            <div class="panel-heading">选择要操作的站点</div>
-                        </div>
+            </div>
+
+            <form class="sedit-tab tab-content container-fluid" id="sedit-tab-add" action="station-edit.jsp" method="post">
+                <div class="form-group row has-feedback panel-margin-bottom-fix">
+                    <div class="input-group">
+                        <span class="input-group-addon">站点名称</span>
+                        <input class="form-control" id="sedit-add-sname" name="name" type="text"
+                               placeholder="输入新站点名称" autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" id="sedit-add-submit" type="submit" value="1">新增</button>
+                        </span>
                     </div>
+                    <span class="form-control-feedback glyphicon" id="sedit-add-sname-feedback"></span>
+                </div>
+            </form>
+
+            <form class="sedit-tab tab-content container-fluid" id="sedit-tab-alter" action="station-edit.jsp" method="post">
+                <div class="form-group row panel-margin-bottom-fix">
+                    <div class="col-xs-5 has-feedback" style="padding: 0;">
+                        <div class="input-group">
+                            <span class="input-group-addon">站点名称</span>
+                            <input class="form-control" id="sedit-alter-sname" name="name" type="text"
+                                   placeholder="输入站点名称" autocomplete="off">
+                        </div>
+                        <span class="form-control-feedback glyphicon" id="sedit-alter-sname-feedback"></span>
+                    </div>
+
+                    <div class="col-xs-5 col-xs-offset-1 has-feedback" style="padding: 0;">
+                        <div class="input-group">
+                            <span class="input-group-addon">新站点名称</span>
+                            <input class="form-control" id="sedit-alter-sname-new" name="name-new" type="text"
+                                   placeholder="输入新站点名称" autocomplete="off">
+                        </div>
+                        <span class="form-control-feedback glyphicon" id="sedit-alter-sname-new-feedback"></span>
+                    </div>
+
+                    <div class="col-xs-1" style="text-align: right; padding: 0;">
+                        <button class="btn btn-warning" id="sedit-alter-submit" type="submit" value="0">修改</button>
+                    </div>
+                </div>
+            </form>
+
+            <form class="sedit-tab tab-content container-fluid" id="sedit-tab-remove" action="station-edit.jsp" method="post">
+                <div class="form-group row has-feedback panel-margin-bottom-fix">
+                    <div class="input-group">
+                        <span class="input-group-addon">站点名称</span>
+                        <input class="form-control" id="sedit-remove-sname" name="name" type="text" placeholder="输入新站点名称"
+                               autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-danger" id="sedit-remove-submit" type="submit" value="-1">删除站点</button>
+                        </span>
+                    </div>
+                    <span class="form-control-feedback glyphicon"></span>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <!-- a li element template -->
-<ul id="ledit-station-template">
+<ul class="__template" id="ledit-station-template">
     <!--
     <li class="list-group-item">
         <div class="input-group">

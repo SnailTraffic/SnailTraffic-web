@@ -22,6 +22,9 @@ var $ledit_stationSelList; // Ul
 var $ledit_lineStationList; // Ol
 
 var $ledit_submitButtons; // . Button
+var $ledit_submitAdd; // Button
+var $ledit_submitAlter; // Button
+var $ledit_submitRemove; // Button
 
 $(document).ready(function () {
     $ledit_root = $('#ledit-pannel-root');
@@ -46,6 +49,9 @@ $(document).ready(function () {
     $ledit_lineStationList = $('#ledit-station-list');
 
     $ledit_submitButtons = $('.ledit-submit');
+    $ledit_submitAdd = $('#ledit-btn-add');
+    $ledit_submitAlter = $('#ledit-btn-alter');
+    $ledit_submitRemove = $('#ledit-btn-remove');
 });
 
 function newLineStationItem(stationName, left, right) {
@@ -93,6 +99,15 @@ function feedbackNewLineNameStatus(fbStatus) {
 }
 
 $(function () {
+    $('#ledit-tabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+
+        var activeTab = $(this).attr('href');
+        $('.ledit-tab').hide();
+        $(activeTab).show();
+    });
+
     // Line edit thingy...
 
     // Find if bus line is in database
