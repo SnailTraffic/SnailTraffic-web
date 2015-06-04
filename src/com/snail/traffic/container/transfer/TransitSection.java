@@ -7,9 +7,9 @@ import net.sf.json.JSONObject;
 
 public class TransitSection extends BaseTransitStruct implements CovertToJsonObject {
 
-	public String startSite = null;
-	public String endSite	= null;
-	public String lineName	= null;
+	public String startSite = "";
+	public String endSite	= "";
+	public String lineName	= "";
 	public int isLeft = 0;
 	public Vector<String> route = new Vector<>();// route
 

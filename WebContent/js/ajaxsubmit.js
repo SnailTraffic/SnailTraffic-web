@@ -33,7 +33,7 @@ function ajaxSubmit(frm, data, successfn, timeout, errorfn) {
         async: true,
         success: successfn,
         timeout: timeout,
-        error: errorfn != null ? errorfn : function () {}
+        error: errorfn
     });
 }
 
@@ -44,6 +44,6 @@ function ajax(url, meth, data, successfn, errorfn) {
         data: data,
         async: true,
         success: successfn,
-        error: errorfn != null ? errorfn : function () {}
+        error: errorfn
     });
 }

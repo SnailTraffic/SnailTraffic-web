@@ -19,23 +19,34 @@ function openSidebar() {
     });
 }
 
-function drawBusTransit(list) {
-	// The route points are not correct. Deprecated
-    /*
+function drawBusTransit(route) {
     map.clearOverlays();
-	var geoCoder = new BMap.Geocoder();
-	var geoPosition = [];
-	
-	for (var i = 0; i < list.length; i++) {
-		geoCoder.getPoint('武汉市' + list[i] + '-公交车站', function (point) {
-			if (point) {
-				geoPosition.push(point);
-				var marker = new BMap.Marker(point);
-				map.addOverlay(marker);
+    
+    var i = 0;
+    var lines = [];
+    var section = [];
+    
+    var transit = new BMap.TransitRoute(map, {renderOptions: {map: map}, onSearchComplete: function (result) {
+		if (transit.getStatus() == BMAP_STATUS_SUCCESS) {
+			var firstPlan = result.getPlan(0);
+			
+			for (var p = 0; p < firstPlan.getNumLines(); p++) {
+				var line = firstPlan.getLine(p);
+				map.addOverlay(new BMap.Polyline(line.getPath()));
 			}
-		}, '武汉市');
-	}
-	*/
+			
+		}
+    }});
+    
+    for (i; i + 1 < route.length; i++) {
+    	transit.search(route[i], route[i + 1]);
+    	var myIcon = new BMap.Icon("http://developer.baidu.com/map/jsdemo/img/location.gif", new BMap.Size(14,23));
+    	//设置起终点图标
+    	transit.setMarkersSetCallback(function(result){
+    		result[0].marker.setIcon(myIcon);
+    		result[1].marker.setIcon(myIcon);
+    	});
+    }
 }
 
 function drawBusLine(lineName, left) {
@@ -69,6 +80,12 @@ function drawBusStation(stationName) {
             }
         }, '武汉市');
     }
+}
+
+function mapClearOverlays() {
+	if (map) {
+		map.clearOverlays();
+	}
 }
 
 var map = null; // global

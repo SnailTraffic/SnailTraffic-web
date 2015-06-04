@@ -60,6 +60,7 @@ public class SelectRouteProcedure extends SelectProcedure {
                 route.add(newElement);
             }
         } catch (SQLException e) {
+            
             e.printStackTrace();
         }
         return route;

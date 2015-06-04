@@ -9,8 +9,8 @@ import net.sf.json.JSONObject;
 
 public class InfoTransferStruct extends InfoStruct {
 	public Vector<TransitScheme> schemes;
-	public String start;
-	public String end;
+	public String start = "";
+	public String end = "";
 
 	@Override
 	public JSONObject toJSONObject() {
